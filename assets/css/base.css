@@ -1,0 +1,512 @@
+/* ==========================================================================
+   base.css — stile comune a tutto il corso
+   Contiene: variabili dei colori (tema chiaro e scuro), tipografia,
+   barra di navigazione, pulsanti, schede della home, box didattici,
+   tabelle, blocchi di codice ed evidenziazione della sintassi, stampa.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Variabili: tema chiaro (predefinito)
+   -------------------------------------------------------------------------- */
+:root {
+  color-scheme: light;
+
+  --sfondo: #fbfaf7;
+  --sfondo-alt: #f1efe9;      /* riquadri, intestazioni di tabella */
+  --superficie: #ffffff;      /* schede, editor */
+  --testo: #1c1e22;
+  --testo-tenue: #555b66;
+  --bordo: #d6d3cb;
+  --accento: #1f5fbf;
+  --accento-testo: #ffffff;
+  --accento-tenue: #e3ecfa;
+  --focus: #b8860b;
+
+  /* stati: usati con bordi, icone e testo, mai da soli */
+  --ok: #1e7a3c;
+  --ok-tenue: #e2f3e7;
+  --errore: #b3261e;
+  --errore-tenue: #fbe6e4;
+  --avviso: #8a5a00;
+  --avviso-tenue: #fdf1d8;
+
+  /* box didattici */
+  --box-cpp: #1f5fbf;        --box-cpp-sfondo: #e8f0fc;
+  --box-attenzione: #b3261e; --box-attenzione-sfondo: #fdecea;
+  --box-prova: #1e7a3c;      --box-prova-sfondo: #e5f4ea;
+  --box-provatu: #6b3fa0;    --box-provatu-sfondo: #f1eafa;
+  --box-curiosita: #8a5a00;  --box-curiosita-sfondo: #fdf3dc;
+
+  /* codice */
+  --codice-sfondo: #f5f3ee;
+  --codice-testo: #1c1e22;
+  --tk-commento: #6a737d;
+  --tk-stringa: #0a7a3e;
+  --tk-numero: #9a4a00;
+  --tk-parola: #a0168a;
+  --tk-funzione: #1f5fbf;
+  --tk-tag: #a0168a;
+  --tk-attributo: #9a4a00;
+  --tk-proprieta: #1f5fbf;
+
+  --font-testo: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-codice: ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+  --raggio: 8px;
+  --ombra: 0 1px 2px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.05);
+  --altezza-barra: 3.25rem;
+}
+
+/* --------------------------------------------------------------------------
+   2. Tema scuro: preferenza di sistema (se l'utente non ha scelto "chiaro")
+      oppure scelta manuale. I valori sono ripetuti due volte perché il CSS
+      non permette di condividere un blocco tra @media e un selettore.
+   -------------------------------------------------------------------------- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema="chiaro"]) {
+    color-scheme: dark;
+    --sfondo: #15171b;
+    --sfondo-alt: #1f2228;
+    --superficie: #1b1e23;
+    --testo: #e7e5e0;
+    --testo-tenue: #a7adb8;
+    --bordo: #393e47;
+    --accento: #7fb0ff;
+    --accento-testo: #0d1420;
+    --accento-tenue: #1d2c45;
+    --focus: #f2c94c;
+    --ok: #6fd08f;          --ok-tenue: #17321f;
+    --errore: #ff8a80;      --errore-tenue: #3a1d1b;
+    --avviso: #f2c94c;      --avviso-tenue: #352a10;
+    --box-cpp: #7fb0ff;        --box-cpp-sfondo: #1a2638;
+    --box-attenzione: #ff8a80; --box-attenzione-sfondo: #351c1a;
+    --box-prova: #6fd08f;      --box-prova-sfondo: #172d1e;
+    --box-provatu: #c7a6f5;    --box-provatu-sfondo: #2a2138;
+    --box-curiosita: #f2c94c;  --box-curiosita-sfondo: #2f2712;
+    --codice-sfondo: #1f2228;
+    --codice-testo: #e7e5e0;
+    --tk-commento: #8b949e;
+    --tk-stringa: #8fd6a3;
+    --tk-numero: #f0b37e;
+    --tk-parola: #f08fd8;
+    --tk-funzione: #8ab8ff;
+    --tk-tag: #f08fd8;
+    --tk-attributo: #f0b37e;
+    --tk-proprieta: #8ab8ff;
+    --ombra: 0 1px 2px rgba(0, 0, 0, 0.4);
+  }
+}
+
+:root[data-tema="scuro"] {
+  color-scheme: dark;
+  --sfondo: #15171b;
+  --sfondo-alt: #1f2228;
+  --superficie: #1b1e23;
+  --testo: #e7e5e0;
+  --testo-tenue: #a7adb8;
+  --bordo: #393e47;
+  --accento: #7fb0ff;
+  --accento-testo: #0d1420;
+  --accento-tenue: #1d2c45;
+  --focus: #f2c94c;
+  --ok: #6fd08f;          --ok-tenue: #17321f;
+  --errore: #ff8a80;      --errore-tenue: #3a1d1b;
+  --avviso: #f2c94c;      --avviso-tenue: #352a10;
+  --box-cpp: #7fb0ff;        --box-cpp-sfondo: #1a2638;
+  --box-attenzione: #ff8a80; --box-attenzione-sfondo: #351c1a;
+  --box-prova: #6fd08f;      --box-prova-sfondo: #172d1e;
+  --box-provatu: #c7a6f5;    --box-provatu-sfondo: #2a2138;
+  --box-curiosita: #f2c94c;  --box-curiosita-sfondo: #2f2712;
+  --codice-sfondo: #1f2228;
+  --codice-testo: #e7e5e0;
+  --tk-commento: #8b949e;
+  --tk-stringa: #8fd6a3;
+  --tk-numero: #f0b37e;
+  --tk-parola: #f08fd8;
+  --tk-funzione: #8ab8ff;
+  --tk-tag: #f08fd8;
+  --tk-attributo: #f0b37e;
+  --tk-proprieta: #8ab8ff;
+  --ombra: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* --------------------------------------------------------------------------
+   3. Tipografia e impostazioni generali
+   -------------------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--altezza-barra) + 1rem);
+}
+
+body {
+  margin: 0;
+  background: var(--sfondo);
+  color: var(--testo);
+  font-family: var(--font-testo);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4 { line-height: 1.25; margin: 1.6em 0 0.6em; }
+h1 { font-size: 2rem; margin-top: 0.5em; }
+h2 { font-size: 1.55rem; }
+h3 { font-size: 1.2rem; }
+h4 { font-size: 1.05rem; }
+
+p, ul, ol { margin: 0 0 1em; }
+li + li { margin-top: 0.25em; }
+
+a { color: var(--accento); text-underline-offset: 0.15em; }
+a:hover { text-decoration-thickness: 2px; }
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+hr { border: 0; border-top: 1px solid var(--bordo); margin: 2.5rem 0; }
+
+strong { font-weight: 700; }
+
+/* codice in linea */
+code, kbd {
+  font-family: var(--font-codice);
+  font-size: 0.9em;
+}
+:not(pre) > code {
+  background: var(--codice-sfondo);
+  border: 1px solid var(--bordo);
+  border-radius: 4px;
+  padding: 0.05em 0.3em;
+  overflow-wrap: anywhere;
+}
+kbd {
+  border: 1px solid var(--bordo);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  padding: 0 0.3em;
+  background: var(--superficie);
+}
+
+.solo-lettori {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   4. Barra di navigazione comune
+   -------------------------------------------------------------------------- */
+.barra {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: var(--altezza-barra);
+  padding: 0.4rem 1rem;
+  background: var(--superficie);
+  border-bottom: 1px solid var(--bordo);
+}
+.barra-home {
+  white-space: nowrap;
+  font-weight: 600;
+  text-decoration: none;
+}
+.barra-home:hover { text-decoration: underline; }
+.barra-titolo {
+  flex: 1;
+  min-width: 0;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   5. Pulsanti
+   -------------------------------------------------------------------------- */
+.pulsante {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.2;
+  padding: 0.45em 0.85em;
+  border: 1px solid var(--bordo);
+  border-radius: 6px;
+  background: var(--superficie);
+  color: var(--testo);
+  cursor: pointer;
+  text-decoration: none;
+}
+.pulsante:hover { border-color: var(--accento); }
+.pulsante:disabled { opacity: 0.55; cursor: not-allowed; }
+.pulsante-primario {
+  background: var(--accento);
+  border-color: var(--accento);
+  color: var(--accento-testo);
+}
+.pulsante-primario:hover { filter: brightness(1.08); }
+
+.tema-interruttore { flex-shrink: 0; }
+
+/* --------------------------------------------------------------------------
+   6. Pagina generica e home del corso
+   -------------------------------------------------------------------------- */
+.contenitore {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 4rem;
+}
+
+.sottotitolo {
+  font-size: 1.15rem;
+  color: var(--testo-tenue);
+  margin-top: -0.3em;
+}
+
+.griglia-schede {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 1rem;
+  padding: 0;
+  list-style: none;
+}
+.griglia-schede > li { margin: 0; }
+
+.scheda {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1.1rem 1.2rem;
+  background: var(--superficie);
+  border: 1px solid var(--bordo);
+  border-radius: var(--raggio);
+  box-shadow: var(--ombra);
+}
+.scheda h3 { margin: 0 0 0.4em; font-size: 1.15rem; }
+.scheda p { margin: 0 0 0.75em; color: var(--testo-tenue); }
+.scheda-numero {
+  font-family: var(--font-codice);
+  font-size: 0.85rem;
+  color: var(--testo-tenue);
+}
+/* tutta la scheda è cliccabile: il link si estende con ::after */
+.scheda a.scheda-link { text-decoration: none; color: var(--testo); }
+.scheda a.scheda-link::after { content: ""; position: absolute; inset: 0; border-radius: var(--raggio); }
+.scheda:has(a.scheda-link:hover) { border-color: var(--accento); }
+.scheda:has(a.scheda-link:focus-visible) { outline: 3px solid var(--focus); outline-offset: 2px; }
+.scheda a.scheda-link:focus-visible { outline: none; }
+
+.scheda-argomenti {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: auto 0 0;
+  padding: 0;
+  list-style: none;
+}
+.scheda-argomenti li {
+  margin: 0;
+  font-size: 0.8rem;
+  padding: 0.1em 0.55em;
+  border-radius: 999px;
+  background: var(--sfondo-alt);
+  border: 1px solid var(--bordo);
+}
+
+/* moduli in preparazione: visibili ma non cliccabili, con etichetta testuale */
+.scheda-preparazione { opacity: 0.75; border-style: dashed; box-shadow: none; }
+.etichetta-stato {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.1em 0.5em;
+  border: 1px dashed var(--testo-tenue);
+  border-radius: 4px;
+  color: var(--testo-tenue);
+  margin-bottom: 0.5em;
+  align-self: flex-start;
+}
+
+/* --------------------------------------------------------------------------
+   7. Box didattici
+      Uso: <aside class="box box-cpp"> ... </aside>
+      Tipi: box-cpp, box-attenzione, box-prova, box-prova-tu, box-curiosita.
+      L'etichetta con l'icona viene aggiunta dal CSS: non va scritta a mano.
+   -------------------------------------------------------------------------- */
+.box {
+  --colore-box: var(--accento);
+  --sfondo-box: var(--accento-tenue);
+  margin: 1.4rem 0;
+  padding: 0.9rem 1.1rem 0.9rem 1.1rem;
+  border: 1px solid var(--colore-box);
+  border-left-width: 6px;
+  border-radius: var(--raggio);
+  background: var(--sfondo-box);
+  break-inside: avoid;
+}
+.box::before {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--colore-box);
+}
+.box > :last-child { margin-bottom: 0; }
+
+.box-cpp        { --colore-box: var(--box-cpp);        --sfondo-box: var(--box-cpp-sfondo); }
+.box-attenzione { --colore-box: var(--box-attenzione); --sfondo-box: var(--box-attenzione-sfondo); }
+.box-prova      { --colore-box: var(--box-prova);      --sfondo-box: var(--box-prova-sfondo); }
+.box-prova-tu   { --colore-box: var(--box-provatu);    --sfondo-box: var(--box-provatu-sfondo); border-style: dashed; border-left-style: solid; }
+.box-curiosita  { --colore-box: var(--box-curiosita);  --sfondo-box: var(--box-curiosita-sfondo); }
+
+.box-cpp::before        { content: "⇄ Da C++ a JS"; }
+.box-attenzione::before { content: "⚠ Attenzione"; }
+.box-prova::before      { content: "▶ Prova"; }
+.box-prova-tu::before   { content: "✎ Prova tu"; }
+.box-curiosita::before  { content: "💡 Curiosità"; }
+/* box evidenziato senza etichetta: per regole o frasi chiave già titolate nel testo */
+.box-regola { --colore-box: var(--accento); --sfondo-box: var(--accento-tenue); }
+.box-regola::before { content: none; }
+
+/* box senza etichetta automatica (quando il titolo è già nel testo) */
+.box[data-titolo]::before { content: attr(data-titolo); }
+
+/* Traccia di un esercizio: evidenziata come una consegna */
+.traccia {
+  margin: 1.2rem 0 1.5rem;
+  padding: 0.9rem 1.1rem;
+  border: 2px solid var(--testo);
+  border-radius: var(--raggio);
+  background: var(--superficie);
+  font-size: 1.05rem;
+  break-inside: avoid;
+}
+.traccia::before {
+  content: "📋 Traccia";
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+.traccia p { margin: 0; }
+
+/* --------------------------------------------------------------------------
+   8. Tabelle: scorrimento orizzontale solo dentro il contenitore
+      Uso: <div class="tabella"><table>...</table></div>
+   -------------------------------------------------------------------------- */
+.tabella {
+  overflow-x: auto;
+  margin: 1.2rem 0 1.5rem;
+  border: 1px solid var(--bordo);
+  border-radius: var(--raggio);
+  background: var(--superficie);
+}
+.tabella table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+.tabella th, .tabella td {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--bordo);
+}
+.tabella th {
+  background: var(--sfondo-alt);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.tabella tr:last-child td { border-bottom: 0; }
+.tabella td code { white-space: nowrap; overflow-wrap: normal; }
+
+/* --------------------------------------------------------------------------
+   9. Blocchi di codice da leggere ed evidenziazione della sintassi
+      Uso: <pre class="codice"><code class="lang-js">...</code></pre>
+      (lang-js, lang-html, lang-css, lang-cpp)
+   -------------------------------------------------------------------------- */
+pre.codice {
+  position: relative;
+  margin: 1rem 0 1.4rem;
+  padding: 0.9rem 1rem;
+  overflow-x: auto;
+  background: var(--codice-sfondo);
+  color: var(--codice-testo);
+  border: 1px solid var(--bordo);
+  border-radius: var(--raggio);
+  font-family: var(--font-codice);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  tab-size: 2;
+}
+pre.codice code { font-size: inherit; }
+/* etichetta del linguaggio in alto a destra */
+pre.codice[data-lingua]::after {
+  content: attr(data-lingua);
+  position: absolute;
+  top: 0.3rem;
+  right: 0.5rem;
+  font-family: var(--font-testo);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--testo-tenue);
+}
+
+.tk-commento  { color: var(--tk-commento); font-style: italic; }
+.tk-stringa   { color: var(--tk-stringa); }
+.tk-numero    { color: var(--tk-numero); }
+.tk-parola    { color: var(--tk-parola); font-weight: 600; }
+.tk-funzione  { color: var(--tk-funzione); }
+.tk-tag       { color: var(--tk-tag); }
+.tk-attributo { color: var(--tk-attributo); }
+.tk-proprieta { color: var(--tk-proprieta); }
+
+/* --------------------------------------------------------------------------
+   10. Responsive
+   -------------------------------------------------------------------------- */
+@media (max-width: 40rem) {
+  body { font-size: 1rem; }
+  h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.35rem; }
+  .barra { padding: 0.4rem 0.6rem; gap: 0.5rem; }
+  .barra-home .testo-lungo { display: none; }
+}
+
+/* --------------------------------------------------------------------------
+   11. Stampa (comune). Le regole specifiche delle dispense sono in dispensa.css
+   -------------------------------------------------------------------------- */
+@media print {
+  :root, :root[data-tema="scuro"] {
+    color-scheme: light;
+    --sfondo: #fff; --superficie: #fff; --sfondo-alt: #f0f0f0;
+    --testo: #000; --testo-tenue: #333; --bordo: #999;
+    --codice-sfondo: #f6f6f6; --codice-testo: #000;
+    --tk-commento: #555; --tk-stringa: #000; --tk-numero: #000; --tk-parola: #000;
+    --tk-funzione: #000; --tk-tag: #000; --tk-attributo: #000; --tk-proprieta: #000;
+  }
+  body { font-size: 11pt; background: #fff; }
+  .barra, .pulsante, button, .non-stampare { display: none !important; }
+  a { color: #000; }
+  pre, .box, .traccia, table, figure { break-inside: avoid; }
+  h2, h3, h4 { break-after: avoid; }
+  .tk-parola { font-weight: 700; }
+}

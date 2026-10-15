@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TPSIT · 4° anno</title>
+  <link rel="stylesheet" href="assets/css/base.css">
+  <script src="assets/js/tema.js"></script>
+  <script src="corso.js" defer></script>
+  <script src="assets/js/corso-ui.js" defer></script>
+</head>
+<body data-radice="">
+
+  <header class="barra">
+    <span class="barra-titolo">TPSIT · 4° anno</span>
+    <button type="button" class="pulsante tema-interruttore" data-tema-interruttore>☾ Scuro</button>
+  </header>
+
+  <main class="contenitore">
+    <h1>TPSIT · 4° anno</h1>
+    <p class="sottotitolo">Tecnologie e progettazione di sistemi informatici e di telecomunicazioni</p>
+
+    <p>
+      Benvenuto nel corso. Quest'anno lavoriamo soprattutto con <strong>JavaScript</strong>,
+      il linguaggio che fa funzionare le pagine web. Ogni <strong>modulo</strong> è una dispensa
+      interattiva: gli esempi di codice si possono modificare ed eseguire direttamente nella pagina.
+      Gli <strong>strumenti</strong> sono piccole app per esercitarsi, utili in più moduli.
+    </p>
+
+    <section aria-labelledby="titolo-moduli">
+      <h2 id="titolo-moduli">Moduli</h2>
+      <ol class="griglia-schede" id="elenco-moduli"></ol>
+    </section>
+
+    <section aria-labelledby="titolo-strumenti">
+      <h2 id="titolo-strumenti">Strumenti</h2>
+      <ul class="griglia-schede" id="elenco-strumenti"></ul>
+    </section>
+
+    <noscript>
+      <p class="box box-attenzione">Questa pagina ha bisogno di JavaScript per mostrare l'elenco dei moduli.</p>
+    </noscript>
+  </main>
+
+</body>
+</html>
