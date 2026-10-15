@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Primi passi con JavaScript · TPSIT 4° anno</title>
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/dispensa.css">
+  <script src="../../assets/js/tema.js"></script>
+  <script src="../../corso.js" defer></script>
+  <script src="../../assets/js/corso-ui.js" defer></script>
+  <script src="../../assets/js/dispensa.js" defer></script>
+  <script src="../../assets/js/runner.js" defer></script>
+</head>
+<body data-radice="../../" data-modulo="01-primi-passi">
+
+  <header class="barra">
+    <button type="button" class="pulsante indice-apri" aria-controls="indice" aria-expanded="false">☰ Indice</button>
+    <a class="barra-home" href="../../index.html">← Home <span class="testo-lungo">del corso</span></a>
+    <span class="barra-titolo">Primi passi con JavaScript</span>
+    <button type="button" class="pulsante tema-interruttore" data-tema-interruttore>☾ Scuro</button>
+  </header>
+
+  <div class="dispensa">
+    <nav class="dispensa-indice" id="indice" aria-label="Indice della dispensa">
+      <p class="indice-titolo">Indice</p>
+      <ol data-indice></ol>
+    </nav>
+
+    <main class="dispensa-contenuto">
+      <header class="dispensa-intestazione">
+        <p class="scheda-numero">Modulo 01</p>
+        <h1>Primi passi con JavaScript</h1>
+        <p class="sottotitolo">Dalle finestre di dialogo alla pagina web, attraverso quattro esercizi.</p>
+      </header>
+
+      <!-- ================================================================
+           INTRODUZIONE
+           ================================================================ -->
+      <section>
+        <h2 id="introduzione">Introduzione</h2>
+
+        <p>In questa dispensa risolviamo quattro esercizi:</p>
+        <ol>
+          <li>L'utente inserisce un numero e il programma comunica il quadrato e il cubo del numero inserito.</li>
+          <li>L'utente inserisce le dimensioni di un parallelepipedo e il programma comunica il volume.</li>
+          <li>L'utente inserisce due numeri e il programma comunica se il primo è maggiore del secondo.</li>
+          <li>L'utente inserisce un numero intero positivo e il programma comunica la sequenza dei numeri da 1 al numero inserito.</li>
+        </ol>
+
+        <p>Sembrano esercizi facili, e lo sono, ma ognuno nasconde una trappola. Ogni volta che ne incontriamo una impariamo lo strumento di JavaScript che serve per uscirne. Alla fine smetteremo di usare le finestre di dialogo e scriveremo i risultati direttamente nella pagina web.</p>
+
+        <aside class="box box-regola">
+          <p><strong>Come usare questa dispensa</strong>: gli esempi con il pulsante "▶ Esegui" si possono modificare ed eseguire. Fallo. Cambia i valori, rompi il codice, guarda cosa succede. Si impara molto di più da un errore provocato apposta che da un esempio letto e basta.</p>
+        </aside>
+      </section>
+
+      <!-- ================================================================
+           0. DA C++ A JAVASCRIPT
+           ================================================================ -->
+      <section>
+        <h2 id="s0">0. Da C++ a JavaScript: dove gira il codice</h2>
+
+        <p>In C++ scrivi il codice, lo compili e ottieni un programma eseguibile che parte in una finestra di terminale. JavaScript funziona diversamente: <strong>non si compila</strong>, lo legge ed esegue direttamente il <strong>browser</strong>. Il codice JavaScript vive dentro una pagina web.</p>
+
+        <p>Ci sono due modi per inserirlo. Il primo è scriverlo dentro un tag <code>&lt;script&gt;</code>:</p>
+
+<pre class="codice"><code class="lang-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="it"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;Il mio primo script&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Ciao!&lt;/h1&gt;
+
+  &lt;script&gt;
+    console.log("Lo script è partito");
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+        <p>Il secondo è scriverlo in un file separato, per esempio <code>script.js</code>, e collegarlo alla pagina:</p>
+
+<pre class="codice"><code class="lang-html">&lt;script src="script.js"&gt;&lt;/script&gt;</code></pre>
+
+        <p>Il tag <code>&lt;script&gt;</code> va messo in fondo al <code>&lt;body&gt;</code>. Più avanti capiremo perché.</p>
+
+        <h3 id="s0-console">La console</h3>
+
+        <p>Ogni browser ha degli <strong>strumenti per sviluppatori</strong>, che si aprono con <kbd>F12</kbd>. Una delle schede si chiama <strong>Console</strong>: lì compare ciò che scriviamo con <code>console.log(...)</code> e lì vengono segnalati gli errori.</p>
+
+        <aside class="box box-cpp">
+          <p><code>console.log</code> assomiglia a <code>cout</code>, con una differenza importante. L'utente del sito non vede la console: è uno strumento per chi programma. Nella dispensa l'output di <code>console.log</code> compare nel riquadro sotto ogni esempio.</p>
+        </aside>
+
+        <h3 id="s0-variabili">Variabili: let e const</h3>
+
+        <p>In C++ ogni variabile ha un tipo dichiarato:</p>
+
+        <script type="text/plain" data-codice="cpp">
+          int n = 5;
+          double prezzo = 2.5;
+          string nome = "Anna";
+        </script>
+
+        <p>In JavaScript il tipo non si scrive:</p>
+
+        <script type="text/plain" data-codice="js">
+          let n = 5;
+          let prezzo = 2.5;
+          let nome = "Anna";
+        </script>
+
+        <ul>
+          <li><code>let</code> dichiara una variabile il cui valore può cambiare.</li>
+          <li><code>const</code> dichiara una costante: una volta assegnata, non si può riassegnare.</li>
+        </ul>
+
+        <p>In questa dispensa usiamo <code>const</code> quando il valore non deve cambiare e <code>let</code> negli altri casi. Esiste anche la vecchia parola <code>var</code>: la troverai in codice datato, ma noi non la useremo.</p>
+
+        <p>Il tipo, in JavaScript, esiste comunque: lo decide il <strong>valore</strong> contenuto nella variabile, e può cambiare durante il programma.</p>
+
+        <script type="text/plain" data-esegui>
+          let x = 5;
+          console.log(x);
+
+          x = "ciao";
+          console.log(x);
+        </script>
+
+        <aside class="box box-cpp">
+          <p>In C++ assegnare <code>"ciao"</code> a una variabile <code>int</code> è un errore di compilazione. In JavaScript è perfettamente legale. Questa libertà è comoda, ma ha un prezzo, e in questa dispensa lo scopriremo presto.</p>
+        </aside>
+      </section>
+
+      <!-- ================================================================
+           1. ESERCIZIO 1
+           ================================================================ -->
+      <section>
+        <h2 id="s1">1. Esercizio 1: quadrato e cubo</h2>
+
+        <blockquote class="traccia">
+          <p>L'utente inserisce un numero e il programma comunica il quadrato e il cubo del numero inserito.</p>
+        </blockquote>
+
+        <p>Ci servono due cose: un modo per <strong>chiedere</strong> un dato all'utente e un modo per <strong>comunicargli</strong> il risultato.</p>
+
+        <h3 id="s1-1">1.1 prompt: chiedere un dato</h3>
+
+        <p><code>prompt(messaggio)</code> apre una finestra con un messaggio e un campo di testo. Il programma si ferma finché l'utente non risponde, proprio come <code>cin</code> in C++.</p>
+
+        <script type="text/plain" data-codice="cpp">
+          // C++
+          int n;
+          cout << "Inserisci un numero: ";
+          cin >> n;
+        </script>
+
+        <script type="text/plain" data-codice="js">
+          // JavaScript
+          let n = prompt("Inserisci un numero");
+        </script>
+
+        <p><code>prompt</code> <strong>restituisce</strong> un valore, che salviamo in una variabile. Il valore dipende da cosa fa l'utente:</p>
+
+        <div class="tabella">
+          <table>
+            <thead><tr><th>L'utente…</th><th>prompt restituisce</th></tr></thead>
+            <tbody>
+              <tr><td>scrive qualcosa e preme OK</td><td>il testo scritto</td></tr>
+              <tr><td>preme OK senza scrivere nulla</td><td><code>""</code> (stringa vuota)</td></tr>
+              <tr><td>preme Annulla</td><td><code>null</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <script type="text/plain" data-esegui>
+          const risposta = prompt("Come ti chiami?");
+          console.log(risposta);
+        </script>
+
+        <aside class="box box-prova">
+          <p>Esegui l'esempio tre volte. La prima volta scrivi il tuo nome, la seconda premi OK senza scrivere nulla, la terza premi Annulla. Confronta i tre risultati.</p>
+        </aside>
+
+        <p><code>prompt</code> accetta un secondo argomento facoltativo, che è il valore già scritto nel campo:</p>
+
+        <script type="text/plain" data-esegui>
+          const eta = prompt("Quanti anni hai?", "16");
+          console.log(eta);
+        </script>
+
+        <h3 id="s1-2">1.2 alert: comunicare un messaggio</h3>
+
+        <p><code>alert(messaggio)</code> mostra una finestra con un messaggio e un pulsante OK. Anche <code>alert</code> blocca il programma finché l'utente non preme OK.</p>
+
+        <script type="text/plain" data-esegui>
+          alert("Benvenuto nel mondo di JavaScript!");
+        </script>
+
+        <div class="tabella">
+          <table>
+            <thead><tr><th>Strumento</th><th>Chi lo vede</th><th>A cosa serve</th></tr></thead>
+            <tbody>
+              <tr><td><code>alert</code></td><td>l'utente</td><td>comunicare un risultato o un avviso</td></tr>
+              <tr><td><code>console.log</code></td><td>solo chi programma</td><td>controllare valori, cercare errori</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 id="s1-3">1.3 La prima soluzione</h3>
+
+        <p>Il quadrato di un numero è il numero moltiplicato per se stesso. Il cubo è il numero moltiplicato per se stesso tre volte. Traduciamo la definizione matematica alla lettera:</p>
+
+        <script type="text/plain" data-esegui>
+          const n = prompt("Inserisci un numero");
+          const quadrato = n * n;
+          const cubo = n * n * n;
+
+          alert("Il quadrato di " + n + " è " + quadrato);
+          alert("Il cubo di " + n + " è " + cubo);
+        </script>
+
+        <aside class="box box-prova">
+          <p>Inserisci 3, poi 2.5, poi -4. Funziona!</p>
+        </aside>
+
+        <p>Tieni a mente quel "funziona": ci torneremo nella sezione 2.</p>
+
+        <h3 id="s1-4">1.4 Le potenze: ** e Math.pow</h3>
+
+        <p>Scrivere <code>n * n * n</code> va benissimo per il cubo, ma se servisse la potenza decima? Scrivere <code>n * n * n * n * n * n * n * n * n * n</code> è scomodo ed è facile sbagliare il conto. JavaScript ha due modi più compatti per calcolare le potenze:</p>
+
+        <ul>
+          <li>l'operatore <code>**</code>: <code>n ** 3</code> significa "n elevato alla 3";</li>
+          <li>la funzione <code>Math.pow(base, esponente)</code>: <code>Math.pow(n, 3)</code> dà lo stesso risultato.</li>
+        </ul>
+
+        <script type="text/plain" data-esegui>
+          const n = 3;
+          console.log(n * n * n);
+          console.log(n ** 3);
+          console.log(Math.pow(n, 3));
+          console.log(2 ** 10);
+        </script>
+
+        <aside class="box box-cpp">
+          <p><code>Math.pow</code> corrisponde a <code>pow</code> della libreria <code>&lt;cmath&gt;</code>. L'operatore <code>**</code> in C++ non esiste.</p>
+        </aside>
+
+        <aside class="box box-attenzione">
+          <p>In JavaScript, come in C++, il simbolo <code>^</code> <strong>non</strong> è l'elevamento a potenza. È un'operazione sui bit (XOR), e non dà errore: dà semplicemente un risultato sbagliato.</p>
+        </aside>
+
+        <script type="text/plain" data-esegui>
+          console.log(3 ^ 2);   // non è 9!
+          console.log(3 ** 2);
+        </script>
+
+        <h3 id="s1-5">1.5 Costruire i messaggi: concatenazione e template literal</h3>
+
+        <p>Nella prima soluzione abbiamo costruito il messaggio "incollando" pezzi con <code>+</code>. Questa operazione si chiama <strong>concatenazione</strong>. Funziona, ma bisogna gestire a mano virgolette e spazi, ed è facile sbagliare:</p>
+
+        <script type="text/plain" data-esegui>
+          const n = 3;
+          alert("Il quadrato di" + n + "è" + n * n);   // mancano gli spazi!
+        </script>
+
+        <p>Esiste un modo più comodo: i <strong>template literal</strong>. Si scrivono tra due <strong>backtick</strong> (il carattere <code>`</code>, detto accento grave) invece che tra virgolette. Dentro un template literal, <code>${...}</code> è un "buco" che viene riempito con il valore di ciò che c'è tra le graffe.</p>
+
+        <script type="text/plain" data-esegui>
+          const n = 4;
+          alert(`Il quadrato di ${n} è ${n * n}`);
+        </script>
+
+        <p>Tra le graffe non ci va solo il nome di una variabile, ma qualsiasi <strong>espressione</strong>: un calcolo, una chiamata di funzione e così via. JavaScript calcola l'espressione e inserisce il risultato nel testo.</p>
+
+        <p>I template literal possono anche andare a capo, e il messaggio manterrà gli a capo:</p>
+
+        <script type="text/plain" data-esegui>
+          const n = 4;
+          alert(`Numero: ${n}
+          Quadrato: ${n * n}
+          Cubo: ${n * n * n}`);
+        </script>
+
+        <aside class="box box-cpp">
+          <p>In C++ scriveresti <code>cout &lt;&lt; "Il quadrato di " &lt;&lt; n &lt;&lt; " è " &lt;&lt; n * n;</code>. Il template literal è più vicino a come penseresti la frase: scrivi il testo e lasci dei buchi dove vanno i valori.</p>
+        </aside>
+
+        <aside class="box box-attenzione">
+          <p>Sulla tastiera italiana il backtick non ha un tasto dedicato. Su Windows si ottiene con <strong>Alt + 96</strong> sul tastierino numerico. Negli editor di codice spesso c'è una scorciatoia: cercala per il tuo sistema.</p>
+        </aside>
+      </section>
+
+      <!-- ================================================================
+           2. TYPEOF
+           ================================================================ -->
+      <section>
+        <h2 id="s2">2. Funziona… o forse no? Scopriamo typeof</h2>
+
+        <p>Aggiungiamo al nostro programma una riga che calcola anche il doppio del numero:</p>
+
+        <script type="text/plain" data-esegui>
+          const n = prompt("Inserisci un numero");
+          alert(`Il quadrato di ${n} è ${n * n}`);
+          alert(`Il doppio di ${n} è ${n + n}`);
+        </script>
+
+        <aside class="box box-prova">
+          <p>Inserisci 3. Il quadrato è 9, ma il doppio risulta <strong>33</strong>!</p>
+        </aside>
+
+        <p>Per capire cosa succede ci serve un nuovo strumento.</p>
+
+        <h3 id="s2-1">2.1 typeof</h3>
+
+        <p><code>typeof</code> è un operatore che restituisce, sotto forma di stringa, il <strong>tipo</strong> di un valore.</p>
+
+        <script type="text/plain" data-esegui>
+          console.log(typeof 42);
+          console.log(typeof 3.14);
+          console.log(typeof "ciao");
+          console.log(typeof "42");
+          console.log(typeof true);
+        </script>
+
+        <p>I tipi principali che incontreremo sono <code>"number"</code>, <code>"string"</code>, <code>"boolean"</code> e <code>"undefined"</code>.</p>
+
+        <aside class="box box-cpp">
+          <p>In C++ ci sono <code>int</code>, <code>double</code>, <code>float</code>, <code>long</code> e altri tipi numerici. In JavaScript c'è un solo tipo per i numeri, <code>number</code>, sia interi sia con la virgola.</p>
+        </aside>
+
+        <p>Ora chiediamoci: che tipo ha il valore restituito da <code>prompt</code>?</p>
+
+        <script type="text/plain" data-esegui>
+          const risposta = prompt("Scrivi un numero");
+          console.log(risposta);
+          console.log(typeof risposta);
+        </script>
+
+        <p><strong><code>prompt</code> restituisce sempre una stringa</strong>, anche se l'utente scrive un numero. Per JavaScript, <code>"3"</code> (una stringa che contiene il carattere 3) e <code>3</code> (il numero tre) sono cose diverse.</p>
+
+        <aside class="box box-curiosita">
+          <p>Se premi Annulla, <code>prompt</code> restituisce <code>null</code>, e <code>typeof null</code> dà <code>"object"</code>. È un errore storico del linguaggio, rimasto per non rompere i vecchi siti.</p>
+        </aside>
+
+        <h3 id="s2-2">2.2 La coercizione: quando JavaScript converte da solo</h3>
+
+        <p>Allora perché <code>n * n</code> dava 9? Il simbolo <code>*</code> ha un solo significato: moltiplicazione. Se gli passiamo delle stringhe, JavaScript le <strong>converte silenziosamente</strong> in numeri. Lo stesso vale per <code>-</code> e <code>/</code>.</p>
+
+        <p>Il simbolo <code>+</code>, invece, ha due significati: somma tra numeri e concatenazione tra stringhe. Se almeno uno dei due operandi è una stringa, JavaScript sceglie la concatenazione.</p>
+
+        <p>Questa conversione automatica si chiama <strong>coercizione</strong>.</p>
+
+        <script type="text/plain" data-esegui>
+          console.log("3" * "3");
+          console.log("3" - 1);
+          console.log("3" / "3");
+          console.log("3" + 1);
+          console.log("3" + "3");
+          console.log("ciao" * 2);
+        </script>
+
+        <p>Ecco svelato il mistero: l'esercizio 1 funzionava <strong>per caso</strong>, perché usavamo solo la moltiplicazione. Bastava un <code>+</code> per scoprire il problema.</p>
+
+        <aside class="box box-cpp">
+          <p>In C++ il compilatore ti avrebbe fermato prima ancora di eseguire. JavaScript invece prova sempre ad andare avanti e "indovina" cosa intendevi. A volte indovina bene, a volte no.</p>
+        </aside>
+
+        <aside class="box box-regola">
+          <p><strong>Regola d'oro</strong>: quando ricevi un dato dall'utente, <strong>convertilo esplicitamente</strong> nel tipo che ti serve. Non affidarti mai alla coercizione.</p>
+        </aside>
+      </section>
+
+      <!-- ================================================================
+           3. PARSEINT E PARSEFLOAT
+           ================================================================ -->
+      <section>
+        <h2 id="s3">3. Convertire: parseInt e parseFloat</h2>
+
+        <p>JavaScript offre due funzioni per trasformare una stringa in un numero:</p>
+
+        <ul>
+          <li><code>parseInt(stringa)</code> cerca un <strong>numero intero</strong>;</li>
+          <li><code>parseFloat(stringa)</code> cerca un <strong>numero con la virgola</strong> (in inglese <em>floating point</em>, da cui il nome).</li>
+        </ul>
+
+        <p>Entrambe leggono la stringa <strong>da sinistra</strong>, ignorano gli spazi iniziali, prendono le cifre che trovano e <strong>si fermano al primo carattere che non fa parte di un numero</strong>. <code>parseInt</code> si ferma anche al punto decimale. Se all'inizio della stringa non c'è nessun numero, restituiscono <code>NaN</code>, un valore speciale che vedremo tra poco.</p>
+
+        <div class="tabella">
+          <table>
+            <thead><tr><th>Stringa</th><th><code>parseInt</code></th><th><code>parseFloat</code></th></tr></thead>
+            <tbody>
+              <tr><td><code>"12"</code></td><td>12</td><td>12</td></tr>
+              <tr><td><code>"12.7"</code></td><td>12</td><td>12.7</td></tr>
+              <tr><td><code>"12abc"</code></td><td>12</td><td>12</td></tr>
+              <tr><td><code>"&nbsp;&nbsp;7"</code></td><td>7</td><td>7</td></tr>
+              <tr><td><code>"abc"</code></td><td>NaN</td><td>NaN</td></tr>
+              <tr><td><code>""</code></td><td>NaN</td><td>NaN</td></tr>
+              <tr><td><code>"3,5"</code></td><td>3</td><td>3</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>Verifica la tabella:</p>
+
+        <script type="text/plain" data-esegui>
+          console.log(parseInt("12.7"), parseFloat("12.7"));
+          console.log(parseInt("12abc"), parseFloat("12abc"));
+          console.log(parseInt("abc"), parseFloat("abc"));
+          console.log(parseInt("3,5"), parseFloat("3,5"));
+        </script>
+
+        <aside class="box box-attenzione">
+          <p>In JavaScript (come in C++) il separatore decimale è il <strong>punto</strong>. Se un utente italiano scrive <code>3,5</code>, <code>parseFloat</code> legge solo <code>3</code> e si ferma alla virgola, senza segnalare nessun errore.</p>
+        </aside>
+
+        <aside class="box box-cpp">
+          <p><code>parseInt</code> e <code>parseFloat</code> assomigliano a <code>stoi</code> e <code>stof</code> di C++. Anche <code>stoi("12abc")</code> restituisce 12. La differenza è che <code>stoi("abc")</code> lancia un'eccezione, mentre <code>parseInt("abc")</code> restituisce tranquillamente <code>NaN</code>.</p>
+        </aside>
+
+        <aside class="box box-curiosita">
+          <p>Esiste anche la funzione <code>Number(stringa)</code>, che converte la stringa <strong>tutta intera o niente</strong>: <code>Number("12abc")</code> dà <code>NaN</code>. Però ha delle sorprese: <code>Number("")</code> dà <code>0</code>, e anche <code>Number(null)</code> dà <code>0</code>. Un utente che preme Annulla verrebbe scambiato per uno che ha scritto zero! Per questo, in questa dispensa, usiamo <code>parseInt</code> e <code>parseFloat</code>.</p>
+        </aside>
+
+        <h3 id="s3-1">3.1 Esercizio 1, versione corretta</h3>
+
+        <p>La traccia dice "un numero", senza specificare se intero, quindi usiamo <code>parseFloat</code>, che accetta anche i decimali.</p>
+
+        <script type="text/plain" data-esegui>
+          const input = prompt("Inserisci un numero");
+          const n = parseFloat(input);
+
+          alert(`Numero: ${n}
+          Doppio: ${n + n}
+          Quadrato: ${n * n}
+          Cubo: ${n * n * n}`);
+        </script>
+
+        <p>Ora il doppio di 3 è 6. Abbiamo separato due cose diverse: <code>input</code> è il <strong>testo</strong> scritto dall'utente, <code>n</code> è il <strong>numero</strong> con cui facciamo i calcoli.</p>
+
+        <aside class="box box-prova">
+          <p>Inserisci <code>ciao</code>. Ogni risultato vale <code>NaN</code>. Il programma non si blocca, ma il risultato non ha senso. Ci serve un modo per accorgercene: è il prossimo passo.</p>
+        </aside>
+      </section>
+
+      <!-- ================================================================
+           4. ESERCIZIO 2
+           ================================================================ -->
+      <section>
+        <h2 id="s4">4. Esercizio 2: il parallelepipedo e isNaN</h2>
+
+        <blockquote class="traccia">
+          <p>L'utente inserisce le dimensioni di un parallelepipedo e il programma comunica il volume.</p>
+        </blockquote>
+
+        <p>Il volume di un parallelepipedo è il prodotto delle sue tre dimensioni: <strong>lunghezza × larghezza × altezza</strong>.</p>
+
+        <p>Questa volta i dati da chiedere sono tre, e ognuno potrebbe essere sbagliato. Prima di calcolare, dobbiamo <strong>controllare</strong> l'input.</p>
+
+        <h3 id="s4-1">4.1 NaN, "Not a Number"</h3>
+
+        <p><code>NaN</code> significa "non è un numero". È il risultato di un'operazione numerica che non ha senso, come convertire <code>"abc"</code> in un numero o moltiplicare <code>"ciao"</code> per 2. Ha alcune proprietà strane:</p>
+
+        <script type="text/plain" data-esegui>
+          console.log(parseFloat("abc"));
+          console.log(typeof NaN);
+          console.log(NaN + 1);
+          console.log(NaN * 0);
+          console.log(NaN === NaN);
+        </script>
+
+        <ul>
+          <li><code>typeof NaN</code> è <code>"number"</code>. Sembra un controsenso, ma <code>NaN</code> è proprio un valore speciale del tipo numero.</li>
+          <li><code>NaN</code> è <strong>contagioso</strong>: qualsiasi calcolo che lo coinvolge dà <code>NaN</code>.</li>
+          <li><code>NaN</code> <strong>non è uguale nemmeno a se stesso</strong>. Quindi non possiamo controllarlo con <code>if (n === NaN)</code>: la condizione sarebbe sempre falsa.</li>
+        </ul>
+
+        <h3 id="s4-2">4.2 isNaN</h3>
+
+        <p>Per sapere se un valore è <code>NaN</code> si usa la funzione <code>isNaN(valore)</code>, che restituisce <code>true</code> se il valore non è un numero valido e <code>false</code> altrimenti.</p>
+
+        <script type="text/plain" data-esegui>
+          console.log(isNaN(NaN));
+          console.log(isNaN(12));
+          console.log(isNaN(parseFloat("abc")));
+          console.log(isNaN(parseFloat("3.5")));
+        </script>
+
+        <h3 id="s4-3">4.3 Lo schema: chiedo, converto, controllo, calcolo</h3>
+
+        <script type="text/plain" data-esegui>
+          const lunghezza = parseFloat(prompt("Lunghezza (cm)"));
+          const larghezza = parseFloat(prompt("Larghezza (cm)"));
+          const altezza = parseFloat(prompt("Altezza (cm)"));
+
+          if (isNaN(lunghezza) || isNaN(larghezza) || isNaN(altezza)) {
+            alert("Errore: tutte le dimensioni devono essere numeri.");
+          } else {
+            const volume = lunghezza * larghezza * altezza;
+            alert(`Il volume del parallelepipedo è ${volume} cm³`);
+          }
+        </script>
+
+        <p>Osserva come abbiamo scritto <code>parseFloat(prompt(...))</code>: il risultato di <code>prompt</code> viene passato direttamente a <code>parseFloat</code>. Le funzioni si possono annidare, come in matematica.</p>
+
+        <aside class="box box-cpp">
+          <p><code>if</code>, <code>else</code>, <code>||</code> (oppure), <code>&amp;&amp;</code> (e) e <code>!</code> (non) funzionano esattamente come in C++.</p>
+        </aside>
+
+        <p>Questo schema (<strong>chiedo → converto → controllo → calcolo oppure segnalo l'errore</strong>) è lo stesso che useremo in tutti gli esercizi che seguono.</p>
+
+        <aside class="box box-curiosita">
+          <p>Prova a inserire 0.1, 0.2 e 1. Il volume dovrebbe essere 0.02, ma potresti vedere qualcosa come <code>0.020000000000000004</code>. I numeri con la virgola, nel computer, sono approssimati, e succede lo stesso con i <code>double</code> in C++. Per mostrare due cifre decimali puoi scrivere <code>volume.toFixed(2)</code>.</p>
+        </aside>
+
+        <aside class="box box-prova-tu">
+          <p>Un parallelepipedo con una dimensione uguale a zero o negativa non ha senso. Modifica il controllo in modo che rifiuti anche questi valori.</p>
+        </aside>
+      </section>
+
+      <!-- ================================================================
+           5. ESERCIZIO 3
+           ================================================================ -->
+      <section>
+        <h2 id="s5">5. Esercizio 3: confrontare due numeri</h2>
+
+        <blockquote class="traccia">
+          <p>L'utente inserisce due numeri e il programma comunica se il primo è maggiore del secondo.</p>
+        </blockquote>
+
+        <p>Partiamo da una versione senza conversione, per vedere cosa succede:</p>
+
+        <script type="text/plain" data-esegui>
+          const a = prompt("Primo numero");
+          const b = prompt("Secondo numero");
+
+          if (a > b) {
+            alert(`${a} è maggiore di ${b}`);
+          } else {
+            alert(`${a} non è maggiore di ${b}`);
+          }
+        </script>
+
+        <aside class="box box-prova">
+          <p>Inserisci 5 e 3, e tutto va bene. Ora inserisci 10 e 9: il programma dice che <strong>10 non è maggiore di 9</strong>!</p>
+        </aside>
+
+        <h3 id="s5-1">5.1 Confrontare stringhe</h3>
+
+        <p><code>a</code> e <code>b</code> sono stringhe. Quando confronta due stringhe, JavaScript non guarda il loro valore numerico: le confronta <strong>in ordine alfabetico</strong>, carattere per carattere, come in un dizionario. Il primo carattere di <code>"10"</code> è <code>"1"</code>, il primo di <code>"9"</code> è <code>"9"</code>, e <code>"1"</code> viene prima di <code>"9"</code>. Quindi <code>"10"</code> è "minore" di <code>"9"</code>, proprio come "casa" viene prima di "zuppa".</p>
+
+        <script type="text/plain" data-esegui>
+          console.log("10" > "9");
+          console.log(10 > 9);
+          console.log("casa" < "zuppa");
+          console.log("Zebra" < "ape");
+        </script>
+
+        <p>L'ultimo risultato sorprende: le lettere maiuscole vengono <strong>prima</strong> di tutte le minuscole, perché il confronto usa i codici dei caratteri.</p>
+
+        <aside class="box box-cpp">
+          <p>Con <code>std::string</code> in C++ succede esattamente la stessa cosa. <code>string("10") &gt; string("9")</code> è falso.</p>
+        </aside>
+
+        <p>Questo è il motivo più importante per convertire <strong>sempre</strong> l'input: qui la coercizione non interviene, e il programma dà semplicemente una risposta sbagliata senza nessun errore.</p>
+
+        <h3 id="s5-2">5.2 La versione corretta</h3>
+
+        <p>Aggiungiamo la conversione, il controllo e anche il caso in cui i due numeri sono uguali, che la traccia non cita ma che può capitare:</p>
+
+        <script type="text/plain" data-esegui>
+          const a = parseFloat(prompt("Primo numero"));
+          const b = parseFloat(prompt("Secondo numero"));
+
+          if (isNaN(a) || isNaN(b)) {
+            alert("Devi inserire due numeri.");
+          } else if (a > b) {
+            alert(`${a} è maggiore di ${b}`);
+          } else if (a < b) {
+            alert(`${a} è minore di ${b}`);
+          } else {
+            alert(`${a} e ${b} sono uguali`);
+          }
+        </script>
+
+        <aside class="box box-attenzione">
+          <p>In JavaScript esistono due operatori di uguaglianza. <code>==</code> confronta <strong>dopo</strong> aver fatto la coercizione, quindi <code>"5" == 5</code> è <code>true</code>. <code>===</code> confronta senza conversioni: <code>"5" === 5</code> è <code>false</code>. Usa sempre <code>===</code> e <code>!==</code>: fanno meno sorprese.</p>
+        </aside>
+
+        <script type="text/plain" data-esegui>
+          console.log("5" == 5);
+          console.log("5" === 5);
+          console.log(5 === 5);
+        </script>
+      </section>
+
+      <!-- ================================================================
+           6. ESERCIZIO 4
+           ================================================================ -->
+      <section>
+        <h2 id="s6">6. Esercizio 4: la sequenza da 1 a n</h2>
+
+        <blockquote class="traccia">
+          <p>L'utente inserisce un numero intero positivo e il programma comunica la sequenza dei numeri tra 1 e il numero inserito.</p>
+        </blockquote>
+
+        <p>Ora la traccia chiede un <strong>intero positivo</strong>, quindi useremo <code>parseInt</code>. C'è però un dettaglio: <code>parseInt("7.9")</code> restituisce 7, così un utente che scrive 7.9 verrebbe accettato senza accorgersene.</p>
+
+        <p>Un trucco per scoprirlo è convertire la stessa stringa in due modi. Se <code>parseInt</code> e <code>parseFloat</code> danno risultati diversi, l'utente ha scritto un numero con la virgola.</p>
+
+        <div class="tabella">
+          <table>
+            <thead><tr><th>Input</th><th><code>parseInt</code></th><th><code>parseFloat</code></th><th>Accettato?</th></tr></thead>
+            <tbody>
+              <tr><td><code>"5"</code></td><td>5</td><td>5</td><td>✓ sì</td></tr>
+              <tr><td><code>"7.9"</code></td><td>7</td><td>7.9</td><td>✗ no, ha la virgola</td></tr>
+              <tr><td><code>"0"</code></td><td>0</td><td>0</td><td>✗ no, non è positivo</td></tr>
+              <tr><td><code>"abc"</code></td><td>NaN</td><td>NaN</td><td>✗ no, non è un numero</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <script type="text/plain" data-esegui>
+          const input = prompt("Inserisci un numero intero positivo");
+          const n = parseInt(input);
+          const x = parseFloat(input);
+
+          if (isNaN(n) || n !== x || n < 1) {
+            alert("Serve un numero intero positivo!");
+          } else {
+            let sequenza = "";
+            for (let i = 1; i <= n; i++) {
+              sequenza += i;
+              if (i < n) {
+                sequenza += ", ";
+              }
+            }
+            alert(`Sequenza da 1 a ${n}: ${sequenza}`);
+          }
+        </script>
+
+        <p>Qualche osservazione:</p>
+
+        <ul>
+          <li>Il ciclo <code>for</code> è identico a quello di C++, con <code>let</code> al posto di <code>int</code>.</li>
+          <li><code>sequenza</code> parte come stringa vuota e a ogni giro le aggiungiamo un numero. <code>sequenza += i</code> aggiunge un numero a una stringa, quindi è una concatenazione. Questa volta la coercizione ci fa comodo, ed è voluta.</li>
+          <li>L'<code>if</code> dentro il ciclo evita di mettere una virgola dopo l'ultimo numero.</li>
+        </ul>
+
+        <aside class="box box-prova">
+          <p>Inserisci 10, poi 500. Con 500 la finestra di <code>alert</code> diventa un muro di numeri illeggibile.</p>
+        </aside>
+
+        <p>Le finestre di dialogo hanno molti limiti: bloccano la pagina, non si possono formattare, sono scomode per i testi lunghi e i siti veri non le usano quasi mai. I siti veri <strong>scrivono i risultati dentro la pagina</strong>. È l'ultimo passo di questa dispensa.</p>
+
+        <aside class="box box-prova-tu">
+          <p>Inserisci <code>5abc</code>. Il programma lo accetta, perché sia <code>parseInt</code> sia <code>parseFloat</code> leggono 5 e si fermano. Come potresti rifiutare questo input? Suggerimento: rileggi la "Curiosità" su <code>Number</code> nella sezione 3.</p>
+        </aside>
+      </section>
+
+      <!-- ================================================================
+           7. DOM
+           ================================================================ -->
+      <section>
+        <h2 id="s7">7. Dal popup alla pagina: querySelector e innerHTML</h2>
+
+        <h3 id="s7-1">7.1 La pagina è un albero</h3>
+
+        <p>Quando il browser carica una pagina HTML, costruisce in memoria una struttura ad <strong>albero</strong>: ogni tag diventa un oggetto, detto <strong>elemento</strong>, e gli elementi contenuti in un altro elemento sono i suoi <strong>figli</strong>. Questa struttura si chiama <strong>DOM</strong> (<em>Document Object Model</em>). JavaScript può leggere e modificare il DOM, e ogni modifica compare subito nella pagina.</p>
+
+        <script type="text/plain" data-codice="html">
+          <body>
+            <h1 id="titolo">Lista della spesa</h1>
+            <ul class="lista">
+              <li>Pane</li>
+              <li class="urgente">Latte</li>
+            </ul>
+          </body>
+        </script>
+
+        <p>In questo esempio <code>body</code> contiene <code>h1</code> e <code>ul</code>, e <code>ul</code> contiene due <code>li</code>. Gli attributi <code>id</code> e <code>class</code> servono a dare un nome agli elementi:</p>
+
+        <ul>
+          <li><strong><code>id</code></strong> è un nome <strong>unico</strong>: nella pagina può esserci un solo elemento con <code>id="titolo"</code>.</li>
+          <li><strong><code>class</code></strong> è un'etichetta che <strong>più elementi</strong> possono condividere. Un elemento può anche avere più classi, separate da spazi: <code>class="piatto vegano"</code>.</li>
+        </ul>
+
+        <p>Per modificare un elemento con JavaScript, prima bisogna <strong>trovarlo</strong>. Per trovarlo si usano i <strong>selettori CSS</strong>.</p>
+
+        <h3 id="s7-2">7.2 Ripasso: i selettori CSS</h3>
+
+        <p>In CSS ogni regola comincia con un <strong>selettore</strong>, che dice a quali elementi applicare lo stile:</p>
+
+        <script type="text/plain" data-codice="css">
+          .urgente {
+            color: red;
+          }
+        </script>
+
+        <p>Questa regola colora di rosso tutti gli elementi con classe <code>urgente</code>. Ecco i selettori principali:</p>
+
+        <div class="tabella">
+          <table>
+            <thead><tr><th>Selettore</th><th>Seleziona…</th></tr></thead>
+            <tbody>
+              <tr><td><code>li</code></td><td>tutti gli elementi <code>&lt;li&gt;</code></td></tr>
+              <tr><td><code>.urgente</code></td><td>tutti gli elementi con classe <code>urgente</code></td></tr>
+              <tr><td><code>#titolo</code></td><td>l'elemento con <code>id="titolo"</code></td></tr>
+              <tr><td><code>li.urgente</code></td><td>gli elementi <code>&lt;li&gt;</code> che hanno <strong>anche</strong> la classe <code>urgente</code></td></tr>
+              <tr><td><code>ul li</code></td><td>i <code>&lt;li&gt;</code> che stanno <strong>dentro</strong> un <code>&lt;ul&gt;</code>, a qualsiasi profondità</td></tr>
+              <tr><td><code>ul &gt; li</code></td><td>i <code>&lt;li&gt;</code> che sono <strong>figli diretti</strong> di un <code>&lt;ul&gt;</code></td></tr>
+              <tr><td><code>h1, h2</code></td><td>tutti gli <code>&lt;h1&gt;</code> <strong>e</strong> tutti gli <code>&lt;h2&gt;</code></td></tr>
+              <tr><td><code>[type="email"]</code></td><td>gli elementi con l'attributo <code>type</code> uguale a <code>"email"</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>Le regole da ricordare:</p>
+
+        <ul>
+          <li><strong><code>.</code></strong> significa classe e <strong><code>#</code></strong> significa id.</li>
+          <li><strong>Attaccati</strong> (<code>li.urgente</code>): le condizioni valgono per lo <strong>stesso</strong> elemento.</li>
+          <li><strong>Separati da uno spazio</strong> (<code>ul li</code>): il secondo elemento sta <strong>dentro</strong> il primo.</li>
+          <li><strong><code>&gt;</code></strong>: il secondo è figlio <strong>diretto</strong> del primo, senza livelli in mezzo.</li>
+          <li><strong>La virgola</strong> unisce due selezioni diverse.</li>
+        </ul>
+
+        <aside class="box box-attenzione">
+          <p><code>p.nota</code> e <code>p .nota</code> sono selettori diversi. Il primo trova i paragrafi con classe <code>nota</code>. Il secondo trova gli elementi con classe <code>nota</code> che stanno <strong>dentro</strong> un paragrafo. Uno spazio cambia tutto.</p>
+        </aside>
+
+        <p>Prova questi selettori in azione: modifica il CSS nell'anteprima qui sotto e guarda quali elementi cambiano.</p>
+
+        <script type="text/plain" data-anteprima>
+          <style>
+            .urgente { color: red; }
+            ul > li { font-weight: bold; }
+            h1, p { font-family: monospace; }
+          </style>
+          <h1 id="titolo">Lista della spesa</h1>
+          <ul>
+            <li>Pane</li>
+            <li class="urgente">Latte</li>
+          </ul>
+          <p class="nota">Ricordati le buste</p>
+        </script>
+        <script type="text/plain" data-esegui>
+          // Qui non serve JavaScript: modifica lo <style> qui sopra e premi Esegui
+          console.log("Anteprima aggiornata");
+        </script>
+
+        <a class="richiamo" href="../../strumenti/selettori/index.html">
+          <span class="richiamo-icona" aria-hidden="true">🎯</span>
+          <span><strong>Allenati con il simulatore di selettori</strong> Il simulatore evidenzia in tempo reale gli elementi selezionati e propone sfide a livelli. Ti servirà per la parte che segue.</span>
+          <span class="richiamo-freccia" aria-hidden="true">→</span>
+        </a>
+
+        <h3 id="s7-3">7.3 document.querySelector</h3>
+
+        <p><code>document.querySelector(selettore)</code> cerca nella pagina il <strong>primo</strong> elemento che corrisponde al selettore e lo restituisce. Se non trova nulla, restituisce <code>null</code>. Il selettore si scrive come stringa, con le <strong>stesse regole del CSS</strong>.</p>
+
+        <script type="text/plain" data-codice="js">
+          const titolo = document.querySelector("#titolo");
+          const primoUrgente = document.querySelector(".urgente");
+          const primaVoce = document.querySelector("ul > li");
+        </script>
+
+        <p>Esiste anche <code>document.querySelectorAll(selettore)</code>, che restituisce <strong>tutti</strong> gli elementi trovati. Il simulatore di selettori ti mostra entrambi i risultati.</p>
+
+        <h3 id="s7-4">7.4 innerHTML: leggere e scrivere il contenuto</h3>
+
+        <p>Ogni elemento ha la proprietà <code>innerHTML</code>, che contiene l'HTML che sta <strong>dentro</strong> l'elemento. Si può leggere e si può scrivere. Quando la scriviamo, il vecchio contenuto viene sostituito e i tag nel testo vengono interpretati come HTML.</p>
+
+        <script type="text/plain" data-anteprima>
+          <h1 id="titolo">Titolo originale</h1>
+          <p class="nota">Una nota</p>
+          <div id="risultato"></div>
+        </script>
+        <script type="text/plain" data-esegui>
+          const titolo = document.querySelector("#titolo");
+          console.log(titolo.innerHTML);
+
+          titolo.innerHTML = "Titolo cambiato da JavaScript";
+
+          const risultato = document.querySelector("#risultato");
+          risultato.innerHTML = "<strong>Questo testo è in grassetto</strong>";
+        </script>
+
+        <aside class="box box-attenzione" data-titolo="⚠ Attenzione: il null">
+          <p>Se il selettore è sbagliato, <code>querySelector</code> restituisce <code>null</code>, e provare a scrivere in <code>null</code> causa un errore:</p>
+        </aside>
+
+        <script type="text/plain" data-anteprima>
+          <p id="messaggio">Ciao</p>
+        </script>
+        <script type="text/plain" data-esegui>
+          const p = document.querySelector("messaggio");   // manca il #!
+          console.log(p);
+          p.innerHTML = "Arrivederci";
+        </script>
+
+        <p>L'errore "Cannot set properties of null" significa quasi sempre: <strong>il selettore non ha trovato niente</strong>. Controlla di aver scritto <code>#</code> e <code>.</code> correttamente e di non aver sbagliato il nome.</p>
+
+        <aside class="box box-attenzione" data-titolo="⚠ Attenzione: la posizione dello script">
+          <p>Il browser legge la pagina dall'alto verso il basso. Se il <code>&lt;script&gt;</code> sta prima degli elementi che cerca, quando viene eseguito quegli elementi non esistono ancora e <code>querySelector</code> restituisce <code>null</code>. Per questo lo script va messo in fondo al <code>&lt;body&gt;</code>.</p>
+        </aside>
+
+        <p><strong>innerHTML e textContent</strong>. Esiste anche la proprietà <code>textContent</code>, che tratta tutto come <strong>testo semplice</strong> e non interpreta i tag. Quando devi mostrare un testo scritto dall'utente, usa <code>textContent</code>: con <code>innerHTML</code> l'utente potrebbe inserire nella pagina dell'HTML (e perfino del codice) che non hai previsto.</p>
+
+        <script type="text/plain" data-anteprima>
+          <p id="a"></p>
+          <p id="b"></p>
+        </script>
+        <script type="text/plain" data-esegui>
+          const testo = prompt("Scrivi qualcosa, per esempio: <b>ciao</b>");
+          document.querySelector("#a").innerHTML = testo;
+          document.querySelector("#b").textContent = testo;
+        </script>
+
+        <h3 id="s7-5">7.5 Esercizio 4, versione finale</h3>
+
+        <p>Riscriviamo l'esercizio della sequenza mostrando il risultato in una lista dentro la pagina:</p>
+
+        <script type="text/plain" data-anteprima>
+          <h1>Sequenza</h1>
+          <p id="messaggio"></p>
+          <ul id="sequenza"></ul>
+        </script>
+        <script type="text/plain" data-esegui>
+          const input = prompt("Inserisci un numero intero positivo");
+          const n = parseInt(input);
+          const x = parseFloat(input);
+
+          const messaggio = document.querySelector("#messaggio");
+          const lista = document.querySelector("#sequenza");
+
+          if (isNaN(n) || n !== x || n < 1) {
+            messaggio.innerHTML = "Serve un numero intero positivo!";
+          } else {
+            messaggio.innerHTML = `Ecco i numeri da 1 a ${n}:`;
+
+            let elementi = "";
+            for (let i = 1; i <= n; i++) {
+              elementi += `<li>${i}</li>`;
+            }
+            lista.innerHTML = elementi;
+          }
+        </script>
+
+        <p>Rispetto alla versione con <code>alert</code>:</p>
+
+        <ul>
+          <li>l'input si chiede ancora con <code>prompt</code>, ma il risultato va <strong>nella pagina</strong>;</li>
+          <li>ogni numero diventa un elemento <code>&lt;li&gt;</code>, costruito con un template literal;</li>
+          <li>prima costruiamo tutto l'HTML in una stringa e poi lo assegniamo <strong>una volta sola</strong> a <code>innerHTML</code>. Modificare la pagina a ogni giro del ciclo sarebbe più lento.</li>
+        </ul>
+
+        <aside class="box box-prova">
+          <p>Inserisci 500. Ora la pagina scorre normalmente e la lista è leggibile.</p>
+        </aside>
+      </section>
+
+      <!-- ================================================================
+           8. RIEPILOGO
+           ================================================================ -->
+      <section>
+        <h2 id="s8">8. Riepilogo</h2>
+
+        <div class="tabella">
+          <table>
+            <thead><tr><th>Strumento</th><th>Cosa fa</th><th>Restituisce</th><th>Simile in C++</th></tr></thead>
+            <tbody>
+              <tr><td><code>prompt(msg)</code></td><td>chiede un dato all'utente</td><td>una stringa, <code>""</code> oppure <code>null</code></td><td><code>cin &gt;&gt;</code></td></tr>
+              <tr><td><code>alert(msg)</code></td><td>mostra un messaggio all'utente</td><td>niente</td><td><code>cout &lt;&lt;</code></td></tr>
+              <tr><td><code>console.log(v)</code></td><td>stampa nella console, per chi programma</td><td>niente</td><td><code>cout &lt;&lt;</code> (per debug)</td></tr>
+              <tr><td><code>`testo ${expr}`</code></td><td>costruisce una stringa inserendo valori</td><td>una stringa</td><td><code>cout &lt;&lt; "…" &lt;&lt; expr</code></td></tr>
+              <tr><td><code>typeof v</code></td><td>dice il tipo di un valore</td><td><code>"number"</code>, <code>"string"</code>, …</td><td>(tipi dichiarati)</td></tr>
+              <tr><td><code>parseInt(s)</code></td><td>converte una stringa in intero</td><td>un numero oppure <code>NaN</code></td><td><code>stoi</code></td></tr>
+              <tr><td><code>parseFloat(s)</code></td><td>converte una stringa in numero decimale</td><td>un numero oppure <code>NaN</code></td><td><code>stof</code></td></tr>
+              <tr><td><code>isNaN(v)</code></td><td>controlla se un valore non è un numero valido</td><td><code>true</code> / <code>false</code></td><td>—</td></tr>
+              <tr><td><code>a ** b</code>, <code>Math.pow(a,b)</code></td><td>elevamento a potenza</td><td>un numero</td><td><code>pow</code></td></tr>
+              <tr><td><code>document.querySelector(sel)</code></td><td>trova il primo elemento con quel selettore</td><td>un elemento oppure <code>null</code></td><td>—</td></tr>
+              <tr><td><code>el.innerHTML</code></td><td>legge o scrive l'HTML dentro un elemento</td><td>una stringa</td><td>—</td></tr>
+              <tr><td><code>el.textContent</code></td><td>legge o scrive il testo dentro un elemento</td><td>una stringa</td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 id="s8-errori">Errori tipici</h3>
+
+        <ul>
+          <li>Usare il valore di <code>prompt</code> senza convertirlo: <code>"3" + "3"</code> dà <code>"33"</code>.</li>
+          <li>Confrontare stringhe invece di numeri: <code>"10" &gt; "9"</code> è <code>false</code>.</li>
+          <li>Scrivere i decimali con la virgola: <code>parseFloat("3,5")</code> dà <code>3</code>.</li>
+          <li>Controllare <code>NaN</code> con <code>===</code> invece di usare <code>isNaN</code>.</li>
+          <li>Usare <code>^</code> per le potenze invece di <code>**</code>.</li>
+          <li>Dimenticare gli spazi quando si concatena con <code>+</code>.</li>
+          <li>Dimenticare <code>#</code> o <code>.</code> nel selettore di <code>querySelector</code>.</li>
+          <li>Mettere lo <code>&lt;script&gt;</code> prima degli elementi che cerca.</li>
+          <li>Usare <code>innerHTML</code> per mostrare un testo scritto dall'utente.</li>
+        </ul>
+
+        <h3 id="s8-prova-tu">Prova tu</h3>
+
+        <aside class="box box-prova-tu">
+          <ol>
+            <li>Riscrivi l'esercizio 1 (quadrato e cubo) in modo che il risultato compaia in un paragrafo della pagina invece che in un <code>alert</code>.</li>
+            <li>Esercizio 2: oltre al volume, calcola la superficie totale del parallelepipedo, che è 2 × (L×P + L×H + P×H). Mostra i due risultati nella pagina, con due cifre decimali.</li>
+            <li>L'utente inserisce <strong>tre</strong> numeri: il programma comunica qual è il maggiore.</li>
+            <li>Modifica l'esercizio 4 in modo che mostri la sequenza <strong>al contrario</strong>, da n a 1. Poi crea una seconda versione che mostri solo i numeri <strong>pari</strong>.</li>
+            <li>Per ogni numero da 1 a n, mostra in una tabella HTML (<code>&lt;table&gt;</code>) il numero, il suo quadrato e il suo cubo. Costruisci la tabella con un ciclo e <code>innerHTML</code>.</li>
+            <li>Prendi uno qualsiasi degli esercizi e fai in modo che, se l'utente preme Annulla, il programma risponda "Operazione annullata" invece di segnalare un errore.</li>
+          </ol>
+        </aside>
+      </section>
+
+      <nav class="nav-moduli" data-navigazione-moduli aria-label="Altri moduli"></nav>
+    </main>
+  </div>
+
+</body>
+</html>

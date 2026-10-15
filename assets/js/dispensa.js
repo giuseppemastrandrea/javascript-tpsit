@@ -46,7 +46,7 @@
 
     let attuale = null;
     function aggiorna() {
-      const soglia = 120; // px dalla cima della finestra
+      const soglia = Math.max(120, window.innerHeight * 0.3); // px dalla cima della finestra
       let scelto = titoli[0];
       for (let i = 0; i < titoli.length; i++) {
         if (titoli[i].getBoundingClientRect().top <= soglia) scelto = titoli[i];
