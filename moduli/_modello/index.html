@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- 1. Cambia il titolo della pagina -->
+  <title>Titolo del modulo · TPSIT 4° anno</title>
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/dispensa.css">
+  <!-- Stili specifici del modulo, solo se servono:
+  <link rel="stylesheet" href="modulo.css"> -->
+  <script src="../../assets/js/tema.js"></script>
+  <script src="../../corso.js" defer></script>
+  <script src="../../assets/js/corso-ui.js" defer></script>
+  <script src="../../assets/js/dispensa.js" defer></script>
+  <script src="../../assets/js/runner.js" defer></script>
+</head>
+<!-- 2. data-modulo deve essere uguale all'id del modulo in corso.js -->
+<body data-radice="../../" data-modulo="NN-nome">
+
+  <header class="barra">
+    <button type="button" class="pulsante indice-apri" aria-controls="indice" aria-expanded="false">☰ Indice</button>
+    <a class="barra-home" href="../../index.html">← Home <span class="testo-lungo">del corso</span></a>
+    <span class="barra-titolo">Titolo del modulo</span>
+    <button type="button" class="pulsante tema-interruttore" data-tema-interruttore>☾ Scuro</button>
+  </header>
+
+  <div class="dispensa">
+    <!-- L'indice si genera da solo a partire dagli h2 e h3 con id -->
+    <nav class="dispensa-indice" id="indice" aria-label="Indice della dispensa">
+      <p class="indice-titolo">Indice</p>
+      <ol data-indice></ol>
+    </nav>
+
+    <main class="dispensa-contenuto">
+      <header class="dispensa-intestazione">
+        <p class="scheda-numero">Modulo NN</p>
+        <h1>Titolo del modulo</h1>
+        <p class="sottotitolo">Sottotitolo: di cosa parla, in una riga.</p>
+      </header>
+
+      <!-- ===================== SEZIONE D'ESEMPIO ===================== -->
+      <section>
+        <h2 id="sezione-1">1. Titolo della sezione</h2>
+
+        <blockquote class="traccia">
+          <p>Testo della consegna dell'esercizio.</p>
+        </blockquote>
+
+        <p>Testo della spiegazione, con <code>codice in linea</code> e <strong>parole importanti</strong>.</p>
+
+        <h3 id="sezione-1-1">1.1 Titolo della sottosezione</h3>
+
+        <!-- Codice da leggere, non eseguibile (data-codice: js, html, css, cpp) -->
+        <script type="text/plain" data-codice="cpp">
+          // C++
+          int n = 5;
+          cout << n * n;
+        </script>
+
+        <!-- Codice eseguibile -->
+        <script type="text/plain" data-esegui>
+          const n = 5;
+          console.log(`Il quadrato di ${n} è ${n * n}`);
+        </script>
+
+        <!-- Esempio DOM: blocco data-anteprima seguito SUBITO da un blocco data-esegui -->
+        <script type="text/plain" data-anteprima>
+          <h1 id="titolo">Titolo originale</h1>
+          <p class="nota">Una nota</p>
+        </script>
+        <script type="text/plain" data-esegui>
+          const titolo = document.querySelector("#titolo");
+          titolo.innerHTML = "Titolo cambiato da JavaScript";
+        </script>
+
+        <!-- Tabella: il contenitore .tabella la fa scorrere su mobile -->
+        <div class="tabella">
+          <table>
+            <thead><tr><th>Colonna 1</th><th>Colonna 2</th></tr></thead>
+            <tbody><tr><td><code>valore</code></td><td>descrizione</td></tr></tbody>
+          </table>
+        </div>
+
+        <!-- Box didattici: l'etichetta con l'icona la aggiunge il CSS -->
+        <aside class="box box-cpp">
+          <p>Confronto con il C++.</p>
+        </aside>
+        <aside class="box box-attenzione">
+          <p>Una trappola da evitare.</p>
+        </aside>
+        <aside class="box box-prova">
+          <p>Un esperimento da fare subito sull'esempio qui sopra.</p>
+        </aside>
+        <aside class="box box-prova-tu">
+          <p>Un esercizio senza soluzione.</p>
+        </aside>
+        <aside class="box box-curiosita">
+          <p>Un approfondimento facoltativo.</p>
+        </aside>
+        <aside class="box box-regola">
+          <p><strong>Frase chiave</strong>: da ricordare.</p>
+        </aside>
+
+        <!-- Richiamo a uno strumento -->
+        <a class="richiamo" href="../../strumenti/selettori/index.html">
+          <span class="richiamo-icona" aria-hidden="true">🎯</span>
+          <span><strong>Nome dello strumento</strong> A cosa serve, in una frase.</span>
+          <span class="richiamo-freccia" aria-hidden="true">→</span>
+        </a>
+      </section>
+
+      <!-- Link "Modulo precedente / successivo": generati da corso.js -->
+      <nav class="nav-moduli" data-navigazione-moduli aria-label="Altri moduli"></nav>
+    </main>
+  </div>
+
+</body>
+</html>

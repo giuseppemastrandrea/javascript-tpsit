@@ -1,0 +1,348 @@
+/* ==========================================================================
+   dispensa.css — layout comune a tutte le dispense
+   Contiene: indice laterale (fisso su desktop, a scomparsa su mobile),
+   area dei contenuti, componente "codice eseguibile", richiami agli
+   strumenti, navigazione tra moduli, regole di stampa delle dispense.
+   Va incluso DOPO base.css.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Struttura della pagina
+   -------------------------------------------------------------------------- */
+.dispensa {
+  display: grid;
+  grid-template-columns: 1fr;
+  max-width: 82rem;
+  margin: 0 auto;
+}
+
+.dispensa-contenuto {
+  min-width: 0;          /* permette alle tabelle di scorrere dentro il loro box */
+  max-width: 48rem;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 4rem;
+}
+
+.dispensa-intestazione { margin-bottom: 2rem; }
+.dispensa-intestazione h1 { margin-bottom: 0.3em; }
+
+.dispensa-contenuto section { margin-bottom: 2.5rem; }
+.dispensa-contenuto h2 {
+  padding-top: 0.5rem;
+  border-top: 2px solid var(--bordo);
+}
+
+/* --------------------------------------------------------------------------
+   2. Indice laterale
+   -------------------------------------------------------------------------- */
+.indice-apri { display: inline-flex; flex-shrink: 0; }
+
+.dispensa-indice {
+  position: fixed;
+  top: var(--altezza-barra);
+  bottom: 0;
+  left: 0;
+  z-index: 40;
+  width: min(20rem, 85vw);
+  padding: 1rem 0.75rem 2rem;
+  overflow-y: auto;
+  background: var(--superficie);
+  border-right: 1px solid var(--bordo);
+  box-shadow: 4px 0 16px rgba(0, 0, 0, 0.15);
+  transform: translateX(-105%);
+  transition: transform 0.2s ease;
+  visibility: hidden;
+}
+.dispensa-indice.aperto { transform: none; visibility: visible; }
+
+.indice-titolo {
+  margin: 0 0 0.5rem 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--testo-tenue);
+}
+.dispensa-indice ol { list-style: none; margin: 0; padding: 0; }
+.dispensa-indice ol ol { padding-left: 0.9rem; margin-bottom: 0.3rem; }
+.dispensa-indice li { margin: 0; }
+.dispensa-indice a {
+  display: block;
+  padding: 0.25rem 0.5rem;
+  border-left: 3px solid transparent;
+  border-radius: 0 4px 4px 0;
+  color: var(--testo);
+  text-decoration: none;
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+.dispensa-indice ol ol a { font-size: 0.85rem; color: var(--testo-tenue); }
+.dispensa-indice a:hover { background: var(--sfondo-alt); }
+/* sezione corrente: bordo, sfondo e grassetto (non solo colore) */
+.dispensa-indice a.corrente {
+  border-left-color: var(--accento);
+  background: var(--accento-tenue);
+  color: var(--testo);
+  font-weight: 700;
+}
+
+.velo-indice {
+  position: fixed;
+  inset: var(--altezza-barra) 0 0 0;
+  z-index: 35;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+@media (min-width: 64rem) {
+  .dispensa { grid-template-columns: 17rem minmax(0, 1fr); }
+  .indice-apri, .velo-indice { display: none !important; }
+  .dispensa-indice {
+    position: sticky;
+    top: var(--altezza-barra);
+    align-self: start;
+    height: calc(100vh - var(--altezza-barra));
+    width: auto;
+    transform: none;
+    visibility: visible;
+    box-shadow: none;
+    background: transparent;
+    transition: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   3. Componente "codice eseguibile"
+   -------------------------------------------------------------------------- */
+.runner {
+  margin: 1rem 0 1.6rem;
+  border: 1px solid var(--bordo);
+  border-left: 4px solid var(--accento);
+  border-radius: var(--raggio);
+  background: var(--superficie);
+  overflow: hidden;
+}
+
+.runner-etichetta {
+  padding: 0.3rem 0.8rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--testo-tenue);
+  background: var(--sfondo-alt);
+  border-bottom: 1px solid var(--bordo);
+}
+.runner-etichetta:not(:first-child) { border-top: 1px solid var(--bordo); }
+
+/* editor: numeri di riga + pila (pre colorato sotto, textarea trasparente sopra) */
+.editor {
+  display: flex;
+  background: var(--codice-sfondo);
+  font-family: var(--font-codice);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+.editor-numeri {
+  flex: 0 0 auto;
+  min-width: 2.6em;
+  padding: 0.75rem 0.5rem 0.75rem 0.4rem;
+  text-align: right;
+  white-space: pre;
+  color: var(--testo-tenue);
+  opacity: 0.7;
+  border-right: 1px solid var(--bordo);
+  user-select: none;
+}
+.editor-scorri { flex: 1; min-width: 0; overflow-x: auto; }
+.editor-pila { position: relative; width: max-content; min-width: 100%; }
+.editor-colore, .editor-area {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border: 0;
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: normal;
+  tab-size: 2;
+  white-space: pre;
+  word-wrap: normal;
+  overflow-wrap: normal;
+}
+.editor-colore { color: var(--codice-testo); pointer-events: none; }
+.editor-colore code { font: inherit; }
+.editor-area {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  resize: none;
+  overflow: hidden;
+  background: transparent;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  caret-color: var(--testo);
+  outline: none;
+}
+.editor-area::selection { background: rgba(31, 95, 191, 0.3); -webkit-text-fill-color: transparent; }
+.editor:focus-within { box-shadow: inset 0 0 0 2px var(--focus); }
+
+.runner-barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.8rem;
+  border-top: 1px solid var(--bordo);
+}
+.runner-stato { font-size: 0.85rem; color: var(--testo-tenue); }
+
+.runner-anteprima {
+  margin: 0;
+  border-top: 1px solid var(--bordo);
+}
+.runner-anteprima figcaption {
+  padding: 0.3rem 0.8rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--testo-tenue);
+  background: var(--sfondo-alt);
+}
+.runner-anteprima figcaption::before { content: "🖥 "; }
+.runner-iframe-box { padding: 0.6rem; background: var(--sfondo-alt); }
+.runner-iframe {
+  display: block;
+  width: 100%;
+  height: 120px;
+  border: 1px solid var(--bordo);
+  border-radius: 4px;
+  background: #fff;
+}
+/* esempi senza HTML: l'iframe esiste ma non si vede */
+.runner-iframe-nascosto {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+.runner-iframe-nascosto .runner-iframe { width: 0; height: 0; border: 0; }
+
+.runner-output { border-top: 1px solid var(--bordo); }
+.runner-output-titolo {
+  padding: 0.3rem 0.8rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--testo-tenue);
+  background: var(--sfondo-alt);
+}
+.runner-righe {
+  padding: 0.5rem 0.8rem 0.7rem;
+  font-family: var(--font-codice);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  max-height: 22rem;
+  overflow: auto;
+}
+.runner-riga {
+  padding: 0.15rem 0 0.15rem 0.5rem;
+  border-left: 3px solid var(--bordo);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.runner-riga + .runner-riga { margin-top: 0.2rem; }
+.runner-segnaposto { color: var(--testo-tenue); font-style: italic; font-family: var(--font-testo); }
+.runner-warn { border-left-color: var(--avviso); background: var(--avviso-tenue); }
+.runner-error, .runner-errore {
+  border-left-color: var(--errore);
+  border-left-width: 5px;
+  background: var(--errore-tenue);
+}
+.runner-icona { font-weight: 700; }
+.runner-errore .runner-icona, .runner-error .runner-icona { color: var(--errore); }
+.runner-warn .runner-icona { color: var(--avviso); }
+.runner-errore-messaggio { font-weight: 600; }
+.runner-suggerimento {
+  margin-top: 0.3rem;
+  font-family: var(--font-testo);
+  font-size: 0.92rem;
+  white-space: normal;
+}
+
+/* --------------------------------------------------------------------------
+   4. Richiamo a uno strumento (ben visibile)
+      Uso: <a class="richiamo" href="..."><strong>Titolo</strong> testo</a>
+   -------------------------------------------------------------------------- */
+.richiamo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.6rem 0;
+  padding: 1rem 1.2rem;
+  border: 2px solid var(--accento);
+  border-radius: var(--raggio);
+  background: var(--accento-tenue);
+  color: var(--testo);
+  text-decoration: none;
+  box-shadow: var(--ombra);
+}
+.richiamo:hover { border-width: 3px; padding: calc(1rem - 1px) calc(1.2rem - 1px); }
+.richiamo-icona { font-size: 2rem; line-height: 1; flex-shrink: 0; }
+.richiamo strong { display: block; font-size: 1.1rem; color: var(--accento); }
+.richiamo-freccia { margin-left: auto; font-size: 1.5rem; color: var(--accento); flex-shrink: 0; }
+
+/* --------------------------------------------------------------------------
+   5. Navigazione tra moduli
+   -------------------------------------------------------------------------- */
+.nav-moduli {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid var(--bordo);
+}
+.nav-modulo {
+  flex: 1 1 14rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--bordo);
+  border-radius: var(--raggio);
+  background: var(--superficie);
+}
+.nav-modulo-succ { text-align: right; margin-left: auto; }
+.nav-modulo-etichetta {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--testo-tenue);
+}
+
+/* --------------------------------------------------------------------------
+   6. Stampa delle dispense
+      - niente indice, pulsanti, anteprime e output
+      - il codice degli esempi si stampa come testo (il <pre> colorato)
+      - i blocchi di codice non vengono spezzati tra due pagine
+   -------------------------------------------------------------------------- */
+@media print {
+  .dispensa { display: block; max-width: none; }
+  .dispensa-indice, .velo-indice, .indice-apri, .nav-moduli,
+  .runner-barra, .runner-anteprima, .runner-output, .runner-iframe-nascosto,
+  .editor-area { display: none !important; }
+
+  .dispensa-contenuto { max-width: none; padding: 0; }
+  .dispensa-contenuto h2 { border-top: 0; }
+  section { break-inside: auto; }
+
+  .runner { border: 1px solid #999; border-left: 3px solid #000; break-inside: avoid; }
+  .runner-etichetta { background: none; }
+  .editor { background: #f6f6f6; font-size: 9.5pt; }
+  .editor-scorri { overflow: visible; }
+  .editor-pila { width: auto; }
+  .editor-colore, pre.codice { white-space: pre-wrap; overflow-wrap: anywhere; }
+  pre.codice { font-size: 9.5pt; overflow: visible; }
+
+  .richiamo { box-shadow: none; border: 1px solid #000; background: none; }
+  .richiamo::after { content: " (" attr(href) ")"; font-size: 9pt; }
+}
