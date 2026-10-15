@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Verifica dei livelli · Simulatore di selettori</title>
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <script src="../../assets/js/tema.js"></script>
+  <script src="scene.js" defer></script>
+  <script src="livelli.js" defer></script>
+  <style>
+    .esito { font-weight: 700; white-space: nowrap; }
+    .esito-ok { color: var(--ok); }
+    .esito-ko { color: var(--errore); }
+    tr.riga-ko td { background: var(--errore-tenue); }
+    .riepilogo { font-size: 1.15rem; font-weight: 700; padding: 0.8rem 1rem; border-radius: var(--raggio); border: 2px solid; }
+    .riepilogo-ok { border-color: var(--ok); background: var(--ok-tenue); }
+    .riepilogo-ko { border-color: var(--errore); background: var(--errore-tenue); border-style: dashed; }
+    .nota-ko { color: var(--errore); font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+
+  <header class="barra">
+    <a class="barra-home" href="index.html">← Simulatore</a>
+    <span class="barra-titolo">Verifica dei livelli</span>
+    <button type="button" class="pulsante tema-interruttore" data-tema-interruttore>☾ Scuro</button>
+  </header>
+
+  <main class="contenitore">
+    <h1>Verifica dei livelli</h1>
+    <p>
+      Questa pagina esegue ogni selettore di riferimento sulla sua scena e confronta il numero
+      di elementi trovati con il numero atteso scritto in <code>livelli.js</code>.
+      Aprila dopo ogni modifica a <code>scene.js</code> o <code>livelli.js</code>:
+      tutti i controlli devono risultare ✓.
+    </p>
+
+    <div id="riepilogo" class="riepilogo" role="status"></div>
+
+    <h2>Sfide</h2>
+    <div class="tabella">
+      <table>
+        <thead><tr><th>Esito</th><th>#</th><th>Gruppo</th><th>Scena</th><th>Riferimento</th><th>Attesi</th><th>Trovati</th></tr></thead>
+        <tbody id="tabella-sfide"></tbody>
+      </table>
+    </div>
+
+    <h2>Leggi il selettore</h2>
+    <div class="tabella">
+      <table>
+        <thead><tr><th>Esito</th><th>#</th><th>Scena</th><th>Selettore</th><th>Attesi</th><th>Trovati</th></tr></thead>
+        <tbody id="tabella-leggi"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <script>
+    /* Ogni scena viene trasformata in un documento con DOMParser e il selettore
+       viene eseguito su body.querySelectorAll, come fa il simulatore. */
+    document.addEventListener("DOMContentLoaded", function () {
+      "use strict";
+      const problemi = [];
+      const documenti = {};
+
+      function documentoScena(id) {
+        if (!(id in documenti)) {
+          const scena = window.SCENE && window.SCENE[id];
+          documenti[id] = scena
+            ? new DOMParser().parseFromString("<!DOCTYPE html><html><head></head><body>" + scena.html.trim() + "</body></html>", "text/html")
+            : null;
+        }
+        return documenti[id];
+      }
+
+      // Restituisce { trovati, nota } dove nota spiega l'eventuale problema
+      function conta(scena, selettore) {
+        const doc = documentoScena(scena);
+        if (!doc) return { trovati: null, nota: "scena «" + scena + "» non trovata in scene.js" };
+        try {
+          return { trovati: doc.body.querySelectorAll(selettore).length, nota: "" };
+        } catch (e) {
+          return { trovati: null, nota: "selettore non valido" };
+        }
+      }
+
+      function cella(riga, testo, classe) {
+        const td = document.createElement("td");
+        if (classe === "codice") {
+          const code = document.createElement("code");
+          code.textContent = testo;
+          td.appendChild(code);
+        } else {
+          td.textContent = testo;
+          if (classe) td.className = classe;
+        }
+        riga.appendChild(td);
+        return td;
+      }
+
+      function controlla(tbody, voci, nomeModalita, colonne) {
+        const idVisti = new Set();
+        voci.forEach(function (voce) {
+          const selettore = voce.riferimento || voce.selettore;
+          const r = conta(voce.scena, selettore);
+          let nota = r.nota;
+          if (idVisti.has(voce.id)) nota = (nota ? nota + "; " : "") + "id ripetuto";
+          idVisti.add(voce.id);
+          const ok = nota === "" && r.trovati === voce.attesi;
+          if (!ok) problemi.push(nomeModalita + " " + voce.id);
+
+          const tr = document.createElement("tr");
+          if (!ok) tr.className = "riga-ko";
+          const esito = cella(tr, ok ? "✓ ok" : "✗ errore", "esito " + (ok ? "esito-ok" : "esito-ko"));
+          esito.setAttribute("aria-label", ok ? "superato" : "non superato");
+          cella(tr, String(voce.id));
+          colonne.forEach(function (c) { cella(tr, c(voce)); });
+          cella(tr, selettore, "codice");
+          cella(tr, String(voce.attesi));
+          const tdTrovati = cella(tr, r.trovati === null ? "—" : String(r.trovati));
+          if (nota) {
+            const span = document.createElement("div");
+            span.className = "nota-ko";
+            span.textContent = nota;
+            tdTrovati.appendChild(span);
+          }
+          tbody.appendChild(tr);
+        });
+      }
+
+      const riepilogo = document.getElementById("riepilogo");
+      if (!window.SCENE || !window.LIVELLI) {
+        riepilogo.className = "riepilogo riepilogo-ko";
+        riepilogo.textContent = "✗ scene.js o livelli.js non caricati (o con un errore di sintassi): apri la console con F12.";
+        return;
+      }
+
+      controlla(document.getElementById("tabella-sfide"), window.LIVELLI.sfide, "Sfida",
+        [function (v) { return v.gruppo; }, function (v) { return v.scena; }]);
+      controlla(document.getElementById("tabella-leggi"), window.LIVELLI.leggi, "Quesito",
+        [function (v) { return v.scena; }]);
+
+      const totale = window.LIVELLI.sfide.length + window.LIVELLI.leggi.length;
+      if (problemi.length === 0) {
+        riepilogo.className = "riepilogo riepilogo-ok";
+        riepilogo.textContent = "✓ Tutti i " + totale + " controlli sono superati.";
+      } else {
+        riepilogo.className = "riepilogo riepilogo-ko";
+        riepilogo.textContent = "✗ " + problemi.length + " controlli su " + totale + " non superati: " + problemi.join(", ") + ".";
+      }
+      document.title = (problemi.length ? "✗ " : "✓ ") + document.title;
+    });
+  </script>
+</body>
+</html>
