@@ -74,7 +74,10 @@
 
     const moduli = CORSO.moduli.slice().sort(function (a, b) { return a.numero - b.numero; });
     const pos = moduli.findIndex(function (m) { return m.id === idModulo; });
-    if (pos === -1) return;
+    if (pos === -1) {
+      contenitore.hidden = true; // modulo non (ancora) registrato in corso.js
+      return;
+    }
 
     function collegamento(voce, verso) {
       const etichetta = verso === "prec" ? "← Modulo precedente" : "Modulo successivo →";
