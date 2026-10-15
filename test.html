@@ -5,11 +5,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        img {
+            max-width: 400px;
+        }
+    </style>
 </head>
 
 <body>
-    <div id="content"></div>
+    <div id="content">
+        <div id="titolo">
+            <h1>Titolo della pagina</h1>
+        </div>
+        <div id="testo">
+            <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo vel dolorum provident facilis corporis
+                cupiditate fuga porro recusandae, maxime iusto, unde voluptatibus reiciendis? Quibusdam vitae eveniet
+                quisquam nemo, totam fuga.
+            </p>
+            <img id="mia-immagine" src="https://images.pexels.com/photos/39307839/pexels-photo-39307839.jpeg" />
+        </div>
+    </div>
     <script>
+        function test() {
+            let element = "CIAO";
+        }
+        let element = document.querySelector("#content")
+        /* element è una variabile globale che contiene l'oggetto che rappresenta il div con id content
+        element quindi è un oggetto e in quanto tale contiene: 
+        - attributi -> esempio: innerHTML, classList, id, innerText, .............
+        - metodi    -> li vedremo più in là
+        
+        setTimeout(function () {
+            let immagine = document.querySelector("#mia-immagine")
+            immagine.src = "https://images.pexels.com/photos/19853490/pexels-photo-19853490.jpeg"
+        }, 5000)
+        
+        */
+
+
+        document.querySelector("#mia-immagine").src = "asldkhalsdhalsd"
 
     </script>
 </body>

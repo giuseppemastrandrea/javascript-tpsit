@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 120" width="240" height="120">
+  <!-- Macchina vista di lato: carrozzeria rossa -->
+  <path d="M20 78 L28 58 Q32 50 42 50 L72 50 L96 28 Q100 24 108 24 L160 24 Q168 24 174 30 L196 50 L214 54 Q224 56 224 66 L224 80 Q224 86 218 86 L26 86 Q20 86 20 80 Z" fill="#d0342c" stroke="#9b211b" stroke-width="2"/>
+  <path d="M104 32 L156 32 Q162 32 166 36 L180 50 L88 50 Z" fill="#cfe3f5" stroke="#9b211b" stroke-width="2"/>
+  <line x1="132" y1="32" x2="132" y2="50" stroke="#9b211b" stroke-width="3"/>
+  <circle cx="64" cy="88" r="17" fill="#2b2b2b"/><circle cx="64" cy="88" r="7" fill="#c8c8c8"/>
+  <circle cx="180" cy="88" r="17" fill="#2b2b2b"/><circle cx="180" cy="88" r="7" fill="#c8c8c8"/>
+  <rect x="212" y="60" width="10" height="6" rx="2" fill="#ffd54a"/>
+</svg>

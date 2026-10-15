@@ -22,7 +22,7 @@ window.CORSO = {
       numero: 1,
       titolo: "Primi passi con JavaScript",
       descrizione: "Dalle finestre di dialogo alla pagina web, attraverso quattro esercizi.",
-      argomenti: ["prompt e alert", "template literal", "typeof", "parseInt e parseFloat", "isNaN", "querySelector", "innerHTML"],
+      argomenti: ["prompt e alert", "template literal", "typeof", "parseInt e parseFloat", "isNaN", "attributi e metodi", "querySelector", "innerHTML"],
       percorso: "moduli/01-primi-passi/index.html",
       stato: "pubblicato"
     }

@@ -758,7 +758,96 @@
           <span class="richiamo-freccia" aria-hidden="true">→</span>
         </a>
 
-        <h3 id="s7-3">7.3 document.querySelector</h3>
+        <h3 id="s7-3">7.3 Oggetti: attributi e metodi</h3>
+
+        <p>Prima di usare <code>querySelector</code> e <code>innerHTML</code> ci serve un'idea nuova: l'<strong>oggetto</strong>. Nella sezione 7.1 abbiamo detto che ogni tag diventa un oggetto. Ma che cos'è un oggetto?</p>
+
+        <p>Pensa a una macchina. Puoi descriverla con le sue caratteristiche: è una Ford Focus del 2016, di colore grigio. E puoi farle fare delle cose: la metti in moto, acceleri, freni.</p>
+
+        <p>Un oggetto, in programmazione, funziona allo stesso modo. Ha:</p>
+
+        <ul>
+          <li><strong>attributi</strong>: le sue caratteristiche. Si usano come <strong>variabili</strong>: si possono leggere e si possono sovrascrivere. Se riverniciamo la macchina, il suo colore cambia.</li>
+          <li><strong>metodi</strong>: le azioni che sa fare. Si usano come <strong>funzioni</strong>: si chiamano con le parentesi tonde, e tra le parentesi possono ricevere dei valori.</li>
+        </ul>
+
+        <div class="tabella">
+          <table>
+            <thead><tr><th></th><th>Nella macchina</th><th>Si usano come</th><th>Si scrivono</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Attributi</strong></td><td>marca, modello, anno, colore</td><td>variabili</td><td><code>macchina.colore</code></td></tr>
+              <tr><td><strong>Metodi</strong></td><td>metti in moto, accelera, frena</td><td>funzioni</td><td><code>macchina.accendi()</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>In entrambi i casi si scrive il nome dell'oggetto, un <strong>punto</strong> e il nome dell'attributo o del metodo. La differenza la fanno le parentesi: i metodi le hanno, gli attributi no. Se potessimo comandare la nostra macchina con il codice, scriveremmo:</p>
+
+        <script type="text/plain" data-codice="js">
+          macchina.colore              // leggo un attributo: "grigio"
+          macchina.colore = "rosso"    // lo sovrascrivo: la riverniciamo
+          macchina.accendi()           // chiamo un metodo: la metto in moto
+        </script>
+
+        <aside class="box box-cpp">
+          <p>Se in C++ hai usato le <code>struct</code> o le classi, il punto ti è familiare: <code>macchina.colore</code> e <code>macchina.accendi()</code> si scrivono allo stesso modo. E in realtà hai già usato dei metodi in questa dispensa: <code>console.log</code> è il metodo <code>log</code> dell'oggetto <code>console</code>, e <code>Math.pow</code> è il metodo <code>pow</code> dell'oggetto <code>Math</code>.</p>
+        </aside>
+
+        <h4>Gli elementi della pagina sono oggetti</h4>
+
+        <p>Ogni elemento del DOM è un oggetto, con i suoi attributi e i suoi metodi. Gli attributi che useremo per primi sono questi:</p>
+
+        <div class="tabella">
+          <table>
+            <thead><tr><th>Attributo</th><th>Cosa contiene</th></tr></thead>
+            <tbody>
+              <tr><td><code>innerHTML</code></td><td>l'HTML che sta dentro l'elemento</td></tr>
+              <tr><td><code>id</code></td><td>l'id dell'elemento</td></tr>
+              <tr><td><code>src</code></td><td>nelle immagini (<code>&lt;img&gt;</code>), il percorso del file da mostrare</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>Come gli attributi della macchina, si possono leggere e sovrascrivere. E ogni modifica si vede subito nella pagina: cambiare il <code>src</code> di un'immagine significa mostrare un'altra immagine.</p>
+
+        <p>Anche la pagina intera è un oggetto, e si chiama <code>document</code>. Il metodo di <code>document</code> che useremo è <code>querySelector</code>: gli passiamo un selettore tra le parentesi e lui ci restituisce l'elemento che corrisponde.</p>
+
+        <script type="text/plain" data-codice="js">
+          document.querySelector("#foto")
+          // oggetto  . metodo  ( valore tra le parentesi )
+        </script>
+
+        <script type="text/plain" data-anteprima>
+          <h1 id="titolo">La mia macchina</h1>
+          <img id="foto" src="img/macchina-grigia.svg" alt="Una macchina grigia" width="240">
+        </script>
+        <script type="text/plain" data-esegui>
+          const titolo = document.querySelector("#titolo");
+          const foto = document.querySelector("#foto");
+
+          // leggo gli attributi
+          console.log(titolo.id);
+          console.log(titolo.innerHTML);
+          console.log(foto.src);
+
+          // li sovrascrivo
+          titolo.innerHTML = "La mia macchina, riverniciata";
+          foto.src = "img/macchina-rossa.svg";
+        </script>
+
+        <aside class="box box-curiosita">
+          <p>Quando leggi <code>foto.src</code> non ottieni <code>img/macchina-grigia.svg</code>, come c'è scritto nell'HTML, ma un indirizzo molto più lungo: il browser completa il percorso con la posizione della pagina, per sapere dove andare a prendere il file.</p>
+        </aside>
+
+        <aside class="box box-curiosita">
+          <p>In HTML, <code>id</code>, <code>class</code> e <code>src</code> si chiamano <strong>attributi</strong> del tag. In JavaScript, le caratteristiche di un oggetto si chiamano anche <strong>proprietà</strong>: è il nome che trovi nella documentazione, e lo incontrerai più avanti in questa dispensa. Per noi, quando parliamo di oggetti, attributo e proprietà sono la stessa cosa.</p>
+        </aside>
+
+        <aside class="box box-prova-tu">
+          <p>Nell'esempio qui sopra, dopo aver cambiato l'immagine, cambia anche il suo testo alternativo (l'attributo <code>alt</code>) e stampalo nella console.</p>
+        </aside>
+
+        <h3 id="s7-4">7.4 document.querySelector</h3>
 
         <p><code>document.querySelector(selettore)</code> cerca nella pagina il <strong>primo</strong> elemento che corrisponde al selettore e lo restituisce. Se non trova nulla, restituisce <code>null</code>. Il selettore si scrive come stringa, con le <strong>stesse regole del CSS</strong>.</p>
 
@@ -770,7 +859,7 @@
 
         <p>Esiste anche <code>document.querySelectorAll(selettore)</code>, che restituisce <strong>tutti</strong> gli elementi trovati. Il simulatore di selettori ti mostra entrambi i risultati.</p>
 
-        <h3 id="s7-4">7.4 innerHTML: leggere e scrivere il contenuto</h3>
+        <h3 id="s7-5">7.5 innerHTML: leggere e scrivere il contenuto</h3>
 
         <p>Ogni elemento ha la proprietà <code>innerHTML</code>, che contiene l'HTML che sta <strong>dentro</strong> l'elemento. Si può leggere e si può scrivere. Quando la scriviamo, il vecchio contenuto viene sostituito e i tag nel testo vengono interpretati come HTML.</p>
 
@@ -820,7 +909,7 @@
           document.querySelector("#b").textContent = testo;
         </script>
 
-        <h3 id="s7-5">7.5 Esercizio 4, versione finale</h3>
+        <h3 id="s7-6">7.6 Esercizio 4, versione finale</h3>
 
         <p>Riscriviamo l'esercizio della sequenza mostrando il risultato in una lista dentro la pagina:</p>
 
@@ -885,6 +974,8 @@
               <tr><td><code>document.querySelector(sel)</code></td><td>trova il primo elemento con quel selettore</td><td>un elemento oppure <code>null</code></td><td>—</td></tr>
               <tr><td><code>el.innerHTML</code></td><td>legge o scrive l'HTML dentro un elemento</td><td>una stringa</td><td>—</td></tr>
               <tr><td><code>el.textContent</code></td><td>legge o scrive il testo dentro un elemento</td><td>una stringa</td><td>—</td></tr>
+              <tr><td><code>el.id</code></td><td>legge o scrive l'id di un elemento</td><td>una stringa</td><td>—</td></tr>
+              <tr><td><code>img.src</code></td><td>legge o scrive il percorso dell'immagine da mostrare</td><td>una stringa</td><td>—</td></tr>
             </tbody>
           </table>
         </div>
