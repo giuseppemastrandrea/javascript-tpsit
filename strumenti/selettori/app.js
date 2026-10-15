@@ -135,7 +135,7 @@
     /* Etichette (🎯, ✗, ✓...) in un livello sopra la pagina, fuori dal <body>:
        così i selettori dello studente non le trovano mai */
     .sim-etichette { position: absolute; left: 0; top: 0; width: 0; height: 0; pointer-events: none; }
-    .sim-etichetta { position: absolute; transform: translate(-30%, -70%); padding: 0 4px; border-radius: 4px;
+    .sim-etichetta { position: absolute; transform: translateX(-100%); padding: 0 4px; border-radius: 4px;
       font: bold 12px/16px system-ui, sans-serif; white-space: nowrap; background: #fff; border: 1.5px solid #333; color: #111; }
     .sim-etichetta-bersaglio, .sim-etichetta-manca { border-color: #b85400; }
     .sim-etichetta-extra { border-color: #b3261e; color: #b3261e; }
@@ -412,8 +412,10 @@
       const et = doc.createElement("span");
       et.className = "sim-etichetta sim-etichetta-" + tipo;
       et.textContent = icona;
-      et.style.left = (r.left + scrollX) + "px";
-      et.style.top = (r.top + scrollY) + "px";
+      // in alto a destra, dentro l'elemento: il testo è allineato a sinistra e resta leggibile
+      const alto = r.height < 40 ? r.top + (r.height - 18) / 2 : r.top + 3;
+      et.style.left = (r.right + scrollX - 4) + "px";
+      et.style.top = (alto + scrollY) + "px";
       self.etichette.appendChild(et);
     });
   };
@@ -571,6 +573,355 @@
     input.addEventListener("input", debounce(aggiorna, 150));
 
     vista.carica(menu.value, aggiorna);
+    return { vista: vista };
+  };
+
+  /* ------------------------------------------------------------------------
+     Parti comuni a Sfide e Leggi il selettore
+     ------------------------------------------------------------------------ */
+
+  // Testo con `codice` tra backtick → HTML con <code> (il resto viene escapato)
+  function conCodice(testo) {
+    return escapeHtml(testo).replace(/`([^`]+)`/g, "<code>$1</code>");
+  }
+
+  function plurale(n, singolare, plurale) {
+    return n === 1 ? singolare : plurale;
+  }
+
+  /*
+    Elenco dei livelli raggruppati, con lo stato "superato".
+    Restituisce una funzione aggiorna(indiceCorrente) da chiamare a ogni cambio.
+  */
+  function creaElencoLivelli(contenitore, voci, modalita, nomeVoce, suScelta) {
+    contenitore.innerHTML = "";
+    const pulsanti = [];
+    let gruppoAttuale = null;
+    let riga = null;
+
+    voci.forEach(function (voce, i) {
+      const gruppo = voce.gruppo || "Quesiti";
+      if (gruppo !== gruppoAttuale) {
+        gruppoAttuale = gruppo;
+        const box = crea("div", "gruppo-livelli");
+        box.appendChild(crea("span", "gruppo-titolo", gruppo));
+        riga = crea("div", "pulsanti-livelli");
+        box.appendChild(riga);
+        contenitore.appendChild(box);
+      }
+      const btn = crea("button", "btn-livello", String(voce.id));
+      btn.type = "button";
+      btn.addEventListener("click", function () { suScelta(i); });
+      riga.appendChild(btn);
+      pulsanti.push(btn);
+    });
+
+    return function aggiorna(corrente) {
+      pulsanti.forEach(function (btn, i) {
+        const voce = voci[i];
+        const fatto = Memoria.superato(modalita, voce.id);
+        btn.classList.toggle("superato", fatto);
+        if (i === corrente) btn.setAttribute("aria-current", "step");
+        else btn.removeAttribute("aria-current");
+        btn.setAttribute("aria-label", nomeVoce + " " + voce.id + (fatto ? ", superato" : ", da fare"));
+      });
+    };
+  }
+
+  function primoDaFare(voci, modalita) {
+    for (let i = 0; i < voci.length; i++) {
+      if (!Memoria.superato(modalita, voci[i].id)) return i;
+    }
+    return 0;
+  }
+
+  function pulsante(testo, classe) {
+    const b = crea("button", "pulsante" + (classe ? " " + classe : ""), testo);
+    b.type = "button";
+    return b;
+  }
+
+  /* ------------------------------------------------------------------------
+     5. Modalità Sfide
+     ------------------------------------------------------------------------ */
+
+  AVVIO.sfide = function () {
+    const livelli = window.LIVELLI.sfide;
+    const introduzioni = window.LIVELLI.introduzioni || {};
+    const box = $("#sfide-livello");
+    let corrente = primoDaFare(livelli, "sfide");
+    let bersagli = new Set();
+
+    // Struttura della scheda del livello (creata una volta sola)
+    const testa = crea("div", "livello-testa");
+    const titolo = crea("h2");
+    titolo.id = "sfide-titolo";
+    const gruppo = crea("span", "livello-gruppo");
+    testa.appendChild(titolo);
+    testa.appendChild(gruppo);
+    const intro = crea("div", "box box-curiosita intro-gruppo");
+    intro.setAttribute("data-titolo", "💡 Prima di cominciare");
+    const consegna = crea("p", "consegna");
+    const campo = crea("label", "campo campo-largo");
+    campo.appendChild(crea("span", "campo-etichetta", "Il tuo selettore"));
+    const input = crea("input", "input-selettore");
+    input.type = "text";
+    input.placeholder = "scrivi qui il selettore";
+    ["autocomplete", "autocapitalize", "spellcheck"].forEach(function (a) { input.setAttribute(a, a === "spellcheck" ? "false" : "off"); });
+    campo.appendChild(input);
+    const riscontro = crea("div", "riscontro");
+    riscontro.setAttribute("aria-live", "polite");
+    const azioni = crea("div", "riscontro-azioni");
+    const btnSuggerimento = pulsante("💡 Suggerimento");
+    btnSuggerimento.setAttribute("aria-expanded", "false");
+    azioni.appendChild(btnSuggerimento);
+    const suggerimento = crea("p", "suggerimento-livello");
+    suggerimento.hidden = true;
+    const contenitoreVista = crea("div");
+
+    [testa, intro, consegna, campo, riscontro, azioni, suggerimento, contenitoreVista].forEach(function (el) { box.appendChild(el); });
+
+    const vista = new Vista(contenitoreVista, {
+      cliccabile: false,
+      legenda: [
+        { stato: "bersaglio", testo: "🎯 bersaglio da selezionare (tratteggio)" },
+        { stato: "sel", testo: "selezionato dal tuo selettore (anello pieno)" },
+        { stato: "extra", testo: "✗ selezionato ma non richiesto (righe e barrato)" }
+      ]
+    });
+
+    const aggiornaElenco = creaElencoLivelli($("#sfide-elenco"), livelli, "sfide", "Livello", vai);
+
+    function vai(i) {
+      corrente = i;
+      const liv = livelli[i];
+      titolo.textContent = "Livello " + liv.id + " di " + livelli.length;
+      gruppo.textContent = "Gruppo: " + liv.gruppo;
+      consegna.textContent = liv.consegna;
+      suggerimento.innerHTML = conCodice(liv.suggerimento || "Nessun suggerimento per questo livello.");
+      suggerimento.hidden = true;
+      btnSuggerimento.setAttribute("aria-expanded", "false");
+      input.value = "";
+
+      // Introduzione del gruppo: solo sul primo livello del gruppo
+      const testoIntro = introduzioni[liv.gruppo];
+      const primoDelGruppo = i === 0 || livelli[i - 1].gruppo !== liv.gruppo;
+      intro.hidden = !(testoIntro && primoDelGruppo);
+      if (testoIntro) intro.innerHTML = "<p>" + testoIntro + "</p>";
+
+      aggiornaElenco(corrente);
+      vista.carica(liv.scena, function () {
+        const r = vista.seleziona(liv.riferimento);
+        bersagli = new Set(r.stato === "ok" ? r.indici : []);
+        valuta();
+      });
+    }
+
+    function valuta() {
+      const liv = livelli[corrente];
+      const r = vista.seleziona(input.value);
+      const stati = {};
+      bersagli.forEach(function (i) { stati[i] = ["bersaglio"]; });
+      input.classList.toggle("non-valido", r.stato === "invalido");
+      input.setAttribute("aria-invalid", String(r.stato === "invalido"));
+      riscontro.innerHTML = "";
+
+      if (r.stato === "vuoto") {
+        riscontro.className = "riscontro riscontro-neutro";
+        riscontro.appendChild(crea("p", "", "Scrivi un selettore che prenda tutti e soli gli elementi con il bersaglio 🎯 (" +
+          bersagli.size + " " + plurale(bersagli.size, "elemento", "elementi") + ")."));
+        vista.mostra(stati);
+        return;
+      }
+      if (r.stato === "invalido") {
+        riscontro.className = "riscontro riscontro-neutro";
+        riscontro.appendChild(crea("p", "", "Selettore non valido: continua a scrivere, oppure controlla punti, cancelletti, parentesi e virgolette."));
+        vista.mostra(stati);
+        return;
+      }
+
+      const scelti = new Set(r.indici);
+      let extra = 0;
+      scelti.forEach(function (i) {
+        if (bersagli.has(i)) stati[i].push("sel");
+        else { stati[i] = ["extra"]; extra++; }
+      });
+      let mancano = 0;
+      bersagli.forEach(function (i) { if (!scelti.has(i)) mancano++; });
+      vista.mostra(stati);
+
+      if (mancano === 0 && extra === 0) {
+        Memoria.segna("sfide", liv.id);
+        aggiornaElenco(corrente);
+        riscontro.className = "riscontro riscontro-ok";
+        riscontro.appendChild(crea("p", "riscontro-titolo", "Esatto!"));
+        const sol = crea("p");
+        sol.innerHTML = "Una possibile soluzione: <code>" + escapeHtml(liv.riferimento) + "</code>";
+        riscontro.appendChild(sol);
+        const azioniOk = crea("div", "riscontro-azioni");
+        if (corrente < livelli.length - 1) {
+          const avanti = pulsante("Livello successivo →", "pulsante-primario");
+          avanti.addEventListener("click", function () { vai(corrente + 1); input.focus(); });
+          azioniOk.appendChild(avanti);
+        } else {
+          const daFare = livelli.filter(function (l) { return !Memoria.superato("sfide", l.id); }).length;
+          azioniOk.appendChild(crea("p", "", daFare === 0
+            ? "🏆 Hai superato tutte le sfide!"
+            : "Questo era l'ultimo livello. Te ne restano " + daFare + " da superare: li trovi nell'elenco qui sopra."));
+        }
+        riscontro.appendChild(azioniOk);
+        return;
+      }
+
+      riscontro.className = "riscontro riscontro-quasi";
+      const parti = [];
+      if (mancano > 0) parti.push(plurale(mancano, "Te ne manca 1", "Te ne mancano " + mancano));
+      if (extra > 0) parti.push((mancano > 0 ? "ne prendi " : "Ne prendi ") + extra + " in più");
+      riscontro.appendChild(crea("p", "riscontro-titolo", parti.join(" e ") + "."));
+      riscontro.appendChild(crea("p", "", "Il tuo selettore trova " + r.elementi.length + " " +
+        plurale(r.elementi.length, "elemento", "elementi") + ", i bersagli sono " + bersagli.size + "." +
+        (extra > 0 ? " Quelli in più sono segnati con ✗." : "")));
+    }
+
+    input.addEventListener("input", debounce(valuta, 150));
+    btnSuggerimento.addEventListener("click", function () {
+      suggerimento.hidden = !suggerimento.hidden;
+      btnSuggerimento.setAttribute("aria-expanded", String(!suggerimento.hidden));
+    });
+    $("#sfide-azzera").addEventListener("click", function () {
+      if (confirm("Vuoi davvero azzerare i progressi delle sfide?")) {
+        Memoria.azzera("sfide");
+        vai(0);
+      }
+    });
+
+    vai(corrente);
+    return { vista: vista };
+  };
+
+  /* ------------------------------------------------------------------------
+     6. Modalità Leggi il selettore
+     ------------------------------------------------------------------------ */
+
+  AVVIO.leggi = function () {
+    const quesiti = window.LIVELLI.leggi;
+    const box = $("#leggi-quesito");
+    let corrente = primoDaFare(quesiti, "leggi");
+    let scelti = new Set();
+    let verificato = false;
+
+    const testa = crea("div", "livello-testa");
+    const titolo = crea("h2");
+    testa.appendChild(titolo);
+    const spiegazione = crea("p", "", "Quali elementi seleziona questo selettore? Clicca gli elementi nella pagina " +
+      "o nel codice (un secondo clic li deseleziona), poi premi Verifica.");
+    const mostrato = crea("code", "selettore-mostrato");
+    const riscontro = crea("div", "riscontro");
+    riscontro.setAttribute("aria-live", "polite");
+    const azioni = crea("div", "riscontro-azioni");
+    const btnVerifica = pulsante("Verifica", "pulsante-primario");
+    const btnRiprova = pulsante("↺ Riprova");
+    const btnProssimo = pulsante("Prossimo →");
+    [btnVerifica, btnRiprova, btnProssimo].forEach(function (b) { azioni.appendChild(b); });
+    const contenitoreVista = crea("div");
+    [testa, spiegazione, mostrato, riscontro, azioni, contenitoreVista].forEach(function (el) { box.appendChild(el); });
+
+    const vista = new Vista(contenitoreVista, {
+      cliccabile: true,
+      suClick: scegli,
+      legenda: [
+        { stato: "scelto", testo: "● scelto da te" },
+        { stato: "ok", testo: "✓ giusto" },
+        { stato: "bersaglio", testo: "🎯 mancante: andava scelto" },
+        { stato: "extra", testo: "✗ errato: non andava scelto" }
+      ]
+    });
+
+    const aggiornaElenco = creaElencoLivelli($("#leggi-elenco"), quesiti, "leggi", "Quesito", vai);
+
+    function vai(i) {
+      corrente = i;
+      const q = quesiti[i];
+      scelti = new Set();
+      verificato = false;
+      titolo.textContent = "Quesito " + q.id + " di " + quesiti.length;
+      mostrato.textContent = q.selettore;
+      aggiornaElenco(corrente);
+      vista.carica(q.scena, mostraScelte);
+    }
+
+    function mostraScelte() {
+      const stati = {};
+      scelti.forEach(function (i) { stati[i] = ["scelto"]; });
+      vista.mostra(stati);
+      riscontro.className = "riscontro riscontro-neutro";
+      riscontro.innerHTML = "";
+      riscontro.appendChild(crea("p", "", scelti.size === 0
+        ? "Non hai ancora scelto nessun elemento."
+        : "Hai scelto " + scelti.size + " " + plurale(scelti.size, "elemento", "elementi") + "."));
+      btnVerifica.hidden = false;
+      btnVerifica.disabled = scelti.size === 0;
+      btnRiprova.hidden = true;
+      btnProssimo.hidden = true;
+    }
+
+    function scegli(indice) {
+      if (verificato) return;
+      if (scelti.has(indice)) scelti.delete(indice);
+      else scelti.add(indice);
+      mostraScelte();
+    }
+
+    function verifica() {
+      const q = quesiti[corrente];
+      const r = vista.seleziona(q.selettore);
+      const attesi = new Set(r.stato === "ok" ? r.indici : []);
+      const stati = {};
+      let giusti = 0, mancanti = 0, errati = 0;
+      attesi.forEach(function (i) {
+        if (scelti.has(i)) { stati[i] = ["ok"]; giusti++; }
+        else { stati[i] = ["manca"]; mancanti++; }
+      });
+      scelti.forEach(function (i) {
+        if (!attesi.has(i)) { stati[i] = ["extra"]; errati++; }
+      });
+      verificato = true;
+      vista.mostra(stati);
+
+      riscontro.innerHTML = "";
+      const perfetto = mancanti === 0 && errati === 0;
+      if (perfetto) {
+        Memoria.segna("leggi", q.id);
+        aggiornaElenco(corrente);
+        riscontro.className = "riscontro riscontro-ok";
+        riscontro.appendChild(crea("p", "riscontro-titolo", "Perfetto! Hai trovato tutti e soli gli elementi giusti."));
+      } else {
+        riscontro.className = "riscontro riscontro-quasi";
+        riscontro.appendChild(crea("p", "riscontro-titolo",
+          "Giusti: " + giusti + " · Mancanti: " + mancanti + " · Errati: " + errati));
+        riscontro.appendChild(crea("p", "", "Guarda la pagina: ✓ sono quelli giusti, 🎯 quelli che mancavano, ✗ quelli che non andavano scelti."));
+      }
+      const riga = crea("p", "ris-riga");
+      riga.textContent = 'document.querySelectorAll("' + q.selettore + '") → ' + attesi.size + " " + plurale(attesi.size, "elemento", "elementi");
+      riscontro.appendChild(riga);
+
+      btnVerifica.hidden = true;
+      btnRiprova.hidden = perfetto;
+      btnProssimo.hidden = false;
+      btnProssimo.textContent = corrente < quesiti.length - 1 ? "Prossimo →" : "Ricomincia dal primo";
+    }
+
+    btnVerifica.addEventListener("click", verifica);
+    btnRiprova.addEventListener("click", function () { verificato = false; mostraScelte(); });
+    btnProssimo.addEventListener("click", function () { vai(corrente < quesiti.length - 1 ? corrente + 1 : 0); });
+    $("#leggi-azzera").addEventListener("click", function () {
+      if (confirm("Vuoi davvero azzerare i progressi di \"Leggi il selettore\"?")) {
+        Memoria.azzera("leggi");
+        vai(0);
+      }
+    });
+
+    vai(corrente);
     return { vista: vista };
   };
 

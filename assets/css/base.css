@@ -135,6 +135,9 @@
    -------------------------------------------------------------------------- */
 *, *::before, *::after { box-sizing: border-box; }
 
+/* l'attributo hidden deve vincere su qualsiasi display (es. .pulsante) */
+[hidden] { display: none !important; }
+
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
