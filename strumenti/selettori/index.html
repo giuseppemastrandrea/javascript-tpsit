@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Simulatore di selettori · TPSIT 4° anno</title>
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="selettori.css">
+  <script src="../../assets/js/tema.js"></script>
+  <script src="scene.js" defer></script>
+  <script src="livelli.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+
+  <header class="barra">
+    <a class="barra-home" href="../../index.html">← Home <span class="testo-lungo">del corso</span></a>
+    <span class="barra-titolo">Simulatore di selettori</span>
+    <button type="button" class="pulsante tema-interruttore" data-tema-interruttore>☾ Scuro</button>
+  </header>
+
+  <main class="contenitore sim">
+    <h1>Simulatore di selettori CSS</h1>
+    <p class="sottotitolo">
+      Scrivi un selettore e guarda subito quali elementi trova, come farebbe
+      <code>document.querySelectorAll</code>.
+    </p>
+    <p class="sim-link-modulo">
+      📖 Ti serve un ripasso? Leggi la
+      <a href="../../moduli/01-primi-passi/index.html#s7-2">sezione 7.2 del modulo 01: i selettori CSS</a>.
+    </p>
+
+    <!-- Promemoria: la stessa tabella della sezione 7.2 della dispensa -->
+    <details class="promemoria">
+      <summary>Promemoria selettori</summary>
+      <div class="tabella">
+        <table>
+          <thead><tr><th>Selettore</th><th>Seleziona…</th></tr></thead>
+          <tbody>
+            <tr><td><code>li</code></td><td>tutti gli elementi <code>&lt;li&gt;</code></td></tr>
+            <tr><td><code>.urgente</code></td><td>tutti gli elementi con classe <code>urgente</code></td></tr>
+            <tr><td><code>#titolo</code></td><td>l'elemento con <code>id="titolo"</code></td></tr>
+            <tr><td><code>li.urgente</code></td><td>gli elementi <code>&lt;li&gt;</code> che hanno <strong>anche</strong> la classe <code>urgente</code></td></tr>
+            <tr><td><code>ul li</code></td><td>i <code>&lt;li&gt;</code> che stanno <strong>dentro</strong> un <code>&lt;ul&gt;</code>, a qualsiasi profondità</td></tr>
+            <tr><td><code>ul &gt; li</code></td><td>i <code>&lt;li&gt;</code> che sono <strong>figli diretti</strong> di un <code>&lt;ul&gt;</code></td></tr>
+            <tr><td><code>h1, h2</code></td><td>tutti gli <code>&lt;h1&gt;</code> <strong>e</strong> tutti gli <code>&lt;h2&gt;</code></td></tr>
+            <tr><td><code>[type="email"]</code></td><td>gli elementi con l'attributo <code>type</code> uguale a <code>"email"</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <div class="schede" role="tablist" aria-label="Modalità">
+      <button type="button" role="tab" class="scheda-tab" id="tab-esplora" aria-controls="pannello-esplora" aria-selected="true">🔍 Esplora</button>
+      <button type="button" role="tab" class="scheda-tab" id="tab-sfide" aria-controls="pannello-sfide" aria-selected="false" tabindex="-1">🎯 Sfide</button>
+      <button type="button" role="tab" class="scheda-tab" id="tab-leggi" aria-controls="pannello-leggi" aria-selected="false" tabindex="-1">👁 Leggi il selettore</button>
+    </div>
+
+    <!-- ========================= ESPLORA ========================= -->
+    <section class="pannello" id="pannello-esplora" role="tabpanel" aria-labelledby="tab-esplora">
+      <p class="pannello-intro">Scegli una scena e scrivi un selettore: gli elementi trovati si evidenziano nella pagina e nel codice. Clicca un elemento per vedere da quali selettori partire.</p>
+      <div class="sim-controlli">
+        <label class="campo">
+          <span class="campo-etichetta">Scena</span>
+          <select id="esplora-scena"></select>
+        </label>
+        <label class="campo campo-largo">
+          <span class="campo-etichetta">Selettore</span>
+          <input type="text" id="esplora-input" class="input-selettore" placeholder="per esempio: li.urgente"
+                 autocomplete="off" autocapitalize="off" spellcheck="false">
+        </label>
+      </div>
+      <div class="sim-risultato" id="esplora-risultato" aria-live="polite"></div>
+      <div id="esplora-vista"></div>
+      <div class="sim-click" id="esplora-click" aria-live="polite"></div>
+    </section>
+
+    <!-- ========================= SFIDE ========================= -->
+    <section class="pannello" id="pannello-sfide" role="tabpanel" aria-labelledby="tab-sfide" hidden>
+      <div class="sfide-testa">
+        <nav class="elenco-livelli" id="sfide-elenco" aria-label="Elenco dei livelli"></nav>
+        <button type="button" class="pulsante" id="sfide-azzera">Azzera progressi</button>
+      </div>
+      <div class="livello" id="sfide-livello"></div>
+    </section>
+
+    <!-- ===================== LEGGI IL SELETTORE ===================== -->
+    <section class="pannello" id="pannello-leggi" role="tabpanel" aria-labelledby="tab-leggi" hidden>
+      <div class="sfide-testa">
+        <nav class="elenco-livelli" id="leggi-elenco" aria-label="Elenco dei quesiti"></nav>
+        <button type="button" class="pulsante" id="leggi-azzera">Azzera progressi</button>
+      </div>
+      <div class="livello" id="leggi-quesito"></div>
+    </section>
+
+    <p class="sim-memoria" id="avviso-memoria" hidden>
+      ⚠ Il browser non permette di salvare i progressi: l'app funziona lo stesso, ma quando chiudi la pagina li perdi.
+    </p>
+  </main>
+
+</body>
+</html>

@@ -1,0 +1,381 @@
+/* ==========================================================================
+   selettori.css — stile del simulatore di selettori
+   (lo stile DENTRO le scene sta in app.js, costante STILE_SCENA,
+   perché le scene sono iframe con un CSS separato da quello dell'app)
+   ========================================================================== */
+
+.sim { max-width: 84rem; }
+.sim h1 { margin-bottom: 0.2em; }
+.sim-link-modulo { margin-bottom: 1rem; }
+
+/* colori degli stati, uguali a quelli usati dentro le scene */
+:root {
+  --stato-sel: #1f5fbf;
+  --stato-bersaglio: #b85400;
+  --stato-extra: #b3261e;
+  --stato-ok: #1e7a3c;
+  --stato-scelto: #6b3fa0;
+}
+:root[data-tema="scuro"] {
+  --stato-sel: #7fb0ff; --stato-bersaglio: #ffb067; --stato-extra: #ff8a80; --stato-ok: #6fd08f; --stato-scelto: #c7a6f5;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema="chiaro"]) {
+    --stato-sel: #7fb0ff; --stato-bersaglio: #ffb067; --stato-extra: #ff8a80; --stato-ok: #6fd08f; --stato-scelto: #c7a6f5;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Promemoria richiudibile
+   -------------------------------------------------------------------------- */
+.promemoria {
+  margin: 0 0 1.25rem;
+  border: 1px solid var(--bordo);
+  border-radius: var(--raggio);
+  background: var(--superficie);
+}
+.promemoria summary {
+  padding: 0.6rem 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.promemoria summary::before { content: "📌 "; }
+.promemoria .tabella { margin: 0 1rem 1rem; }
+
+/* --------------------------------------------------------------------------
+   Schede (tab)
+   -------------------------------------------------------------------------- */
+.schede {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  border-bottom: 2px solid var(--bordo);
+  margin-bottom: 1.25rem;
+}
+.scheda-tab {
+  font: inherit;
+  font-weight: 600;
+  padding: 0.6rem 1rem;
+  margin-bottom: -2px;
+  border: 2px solid transparent;
+  border-bottom: 0;
+  border-radius: var(--raggio) var(--raggio) 0 0;
+  background: transparent;
+  color: var(--testo-tenue);
+  cursor: pointer;
+}
+.scheda-tab:hover { color: var(--testo); background: var(--sfondo-alt); }
+/* scheda attiva: bordo, sfondo e sottolineatura spessa (non solo colore) */
+.scheda-tab[aria-selected="true"] {
+  color: var(--testo);
+  background: var(--superficie);
+  border-color: var(--bordo);
+  border-bottom: 2px solid var(--superficie);
+  box-shadow: inset 0 3px 0 var(--accento);
+}
+
+.pannello-intro { color: var(--testo-tenue); }
+
+/* --------------------------------------------------------------------------
+   Controlli (scena, selettore)
+   -------------------------------------------------------------------------- */
+.sim-controlli {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  align-items: flex-end;
+  margin-bottom: 0.75rem;
+}
+.campo { display: flex; flex-direction: column; gap: 0.25rem; }
+.campo-largo { flex: 1 1 18rem; }
+.campo-etichetta { font-size: 0.85rem; font-weight: 700; color: var(--testo-tenue); }
+
+select, .input-selettore {
+  font: inherit;
+  padding: 0.5rem 0.65rem;
+  border: 2px solid var(--bordo);
+  border-radius: 6px;
+  background: var(--superficie);
+  color: var(--testo);
+}
+.input-selettore {
+  width: 100%;
+  font-family: var(--font-codice);
+  font-size: 1.05rem;
+}
+.input-selettore:focus { border-color: var(--accento); outline: none; box-shadow: 0 0 0 3px var(--accento-tenue); }
+.input-selettore.non-valido { border-style: dashed; }
+
+/* --------------------------------------------------------------------------
+   Risultato (Elementi trovati, querySelector, querySelectorAll)
+   -------------------------------------------------------------------------- */
+.sim-risultato {
+  min-height: 5.5rem;
+  margin-bottom: 1rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--bordo);
+  border-radius: var(--raggio);
+  background: var(--superficie);
+  font-size: 0.95rem;
+}
+.sim-risultato p { margin: 0 0 0.3rem; }
+.sim-risultato p:last-child { margin-bottom: 0; }
+.ris-conteggio { font-weight: 700; font-size: 1.05rem; }
+.ris-riga {
+  font-family: var(--font-codice);
+  font-size: 0.88rem;
+  overflow-wrap: anywhere;
+}
+.ris-freccia { color: var(--testo-tenue); padding: 0 0.3em; }
+.ris-null { color: var(--testo-tenue); font-style: italic; }
+.ris-neutro { color: var(--testo-tenue); }
+.ris-invalido { color: var(--testo); }
+.ris-invalido::before { content: "⚠ "; color: var(--avviso); }
+
+/* --------------------------------------------------------------------------
+   Vista: pagina renderizzata + codice HTML
+   -------------------------------------------------------------------------- */
+.vista {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+@media (min-width: 56rem) {
+  .vista { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+}
+.vista-riquadro {
+  margin: 0;
+  border: 1px solid var(--bordo);
+  border-radius: var(--raggio);
+  background: var(--superficie);
+  overflow: hidden;
+  min-width: 0;
+}
+.vista-riquadro figcaption {
+  padding: 0.35rem 0.8rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--testo-tenue);
+  background: var(--sfondo-alt);
+  border-bottom: 1px solid var(--bordo);
+}
+.vista-iframe {
+  display: block;
+  width: 100%;
+  height: 280px;
+  border: 0;
+  background: #fff;
+}
+
+.codice-scena {
+  margin: 0;
+  padding: 0.8rem 0.8rem 0.8rem 2.2rem;
+  overflow-x: auto;
+  background: var(--codice-sfondo);
+  color: var(--codice-testo);
+  font-family: var(--font-codice);
+  font-size: 0.85rem;
+  line-height: 1.75;
+}
+.ct {
+  position: relative;
+  border-radius: 3px;
+  padding: 0.05em 0.1em;
+}
+.vista-cliccabile .ct { cursor: pointer; }
+.vista-cliccabile .ct:hover { background: var(--sfondo-alt); text-decoration: underline; }
+
+/* Stati nel codice: anello, tratteggio, motivo a righe, icona a sinistra */
+.ct-sel {
+  box-shadow: 0 0 0 2px var(--stato-sel);
+  background: color-mix(in srgb, var(--stato-sel) 18%, transparent);
+}
+.ct-bersaglio { outline: 2px dashed var(--stato-bersaglio); outline-offset: 2px; }
+.ct-extra {
+  box-shadow: 0 0 0 2px var(--stato-extra);
+  background: repeating-linear-gradient(45deg, color-mix(in srgb, var(--stato-extra) 25%, transparent) 0 4px, transparent 4px 8px);
+  text-decoration: line-through;
+}
+.ct-ok { box-shadow: 0 0 0 2px var(--stato-ok); background: color-mix(in srgb, var(--stato-ok) 18%, transparent); }
+.ct-manca { outline: 2px dashed var(--stato-bersaglio); outline-offset: 2px; }
+.ct-scelto { box-shadow: 0 0 0 2px var(--stato-scelto); background: color-mix(in srgb, var(--stato-scelto) 18%, transparent); }
+
+.ct[data-icona]::before {
+  content: attr(data-icona);
+  position: absolute;
+  right: calc(100% + 0.25rem);
+  top: 0;
+  font-size: 0.8rem;
+  line-height: inherit;
+  white-space: nowrap;
+}
+
+/* Legenda degli stati sotto la vista */
+.legenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.2rem;
+  margin: 0.6rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.85rem;
+  color: var(--testo-tenue);
+}
+.legenda li { margin: 0; display: flex; align-items: center; gap: 0.4rem; }
+.legenda-campione {
+  display: inline-block;
+  width: 1.4rem;
+  height: 0.9rem;
+  border-radius: 3px;
+}
+.campione-sel { box-shadow: 0 0 0 2px var(--stato-sel); background: color-mix(in srgb, var(--stato-sel) 18%, transparent); }
+.campione-bersaglio { outline: 2px dashed var(--stato-bersaglio); outline-offset: 1px; }
+.campione-extra { box-shadow: 0 0 0 2px var(--stato-extra); background: repeating-linear-gradient(45deg, color-mix(in srgb, var(--stato-extra) 35%, transparent) 0 3px, transparent 3px 6px); }
+.campione-ok { box-shadow: 0 0 0 2px var(--stato-ok); background: color-mix(in srgb, var(--stato-ok) 18%, transparent); }
+.campione-scelto { box-shadow: 0 0 0 2px var(--stato-scelto); background: color-mix(in srgb, var(--stato-scelto) 18%, transparent); }
+
+/* --------------------------------------------------------------------------
+   Esplora: suggerimento dopo il clic su un elemento
+   -------------------------------------------------------------------------- */
+.sim-click:not(:empty) {
+  margin-top: 1rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--accento);
+  border-left-width: 5px;
+  border-radius: var(--raggio);
+  background: var(--accento-tenue);
+}
+.sim-click p { margin: 0 0 0.5rem; }
+.sim-click p:last-child { margin-bottom: 0; }
+.elenco-semplici { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0; padding: 0; list-style: none; }
+.elenco-semplici li { margin: 0; }
+.chip-selettore {
+  font-family: var(--font-codice);
+  font-size: 0.9rem;
+  padding: 0.25em 0.6em;
+  border: 1px solid var(--bordo);
+  border-radius: 999px;
+  background: var(--superficie);
+  color: var(--testo);
+  cursor: pointer;
+}
+.chip-selettore:hover { border-color: var(--accento); }
+.chip-conteggio { font-family: var(--font-testo); font-size: 0.8rem; color: var(--testo-tenue); }
+
+/* --------------------------------------------------------------------------
+   Sfide e Leggi: elenco dei livelli
+   -------------------------------------------------------------------------- */
+.sfide-testa {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.elenco-livelli { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; }
+.gruppo-livelli { margin: 0; }
+.gruppo-titolo {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--testo-tenue);
+  margin-bottom: 0.25rem;
+}
+.pulsanti-livelli { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.btn-livello {
+  min-width: 2.4rem;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.3rem 0.4rem;
+  border: 1px solid var(--bordo);
+  border-radius: 6px;
+  background: var(--superficie);
+  color: var(--testo);
+  cursor: pointer;
+}
+.btn-livello:hover { border-color: var(--accento); }
+/* superato: bordo verde, sfondo e spunta */
+.btn-livello.superato {
+  border-color: var(--stato-ok);
+  background: color-mix(in srgb, var(--stato-ok) 15%, var(--superficie));
+}
+.btn-livello.superato::after { content: " ✓"; }
+/* livello corrente: bordo spesso e sottolineato */
+.btn-livello[aria-current="step"] {
+  border: 2px solid var(--accento);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* --------------------------------------------------------------------------
+   Scheda del livello
+   -------------------------------------------------------------------------- */
+.livello-testa { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1rem; }
+.livello-testa h2 { margin: 0.2rem 0 0.4rem; font-size: 1.3rem; border: 0; }
+.livello-gruppo { font-size: 0.85rem; color: var(--testo-tenue); }
+.consegna {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 0.3rem 0 0.8rem;
+}
+.consegna::before { content: "🎯 "; }
+.intro-gruppo { margin: 0.5rem 0 1rem; }
+.intro-gruppo summary { cursor: pointer; font-weight: 700; }
+
+.selettore-mostrato {
+  display: inline-block;
+  font-family: var(--font-codice);
+  font-size: 1.35rem;
+  font-weight: 700;
+  padding: 0.3rem 0.9rem;
+  margin: 0.2rem 0 0.8rem;
+  border: 2px solid var(--testo);
+  border-radius: 6px;
+  background: var(--superficie);
+}
+
+.riscontro {
+  min-height: 3rem;
+  margin: 0.5rem 0 1rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--bordo);
+  border-left-width: 5px;
+  border-radius: var(--raggio);
+  background: var(--superficie);
+}
+.riscontro p { margin: 0 0 0.4rem; }
+.riscontro p:last-child { margin-bottom: 0; }
+.riscontro-neutro { color: var(--testo-tenue); }
+.riscontro-ok { border-color: var(--stato-ok); background: var(--ok-tenue); }
+.riscontro-ok .riscontro-titolo::before { content: "✓ "; }
+.riscontro-quasi { border-color: var(--stato-bersaglio); background: var(--avviso-tenue); }
+.riscontro-quasi .riscontro-titolo::before { content: "↻ "; }
+.riscontro-titolo { font-weight: 700; font-size: 1.05rem; }
+.riscontro-azioni { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
+.suggerimento-livello {
+  margin: 0 0 1rem;
+  padding: 0.6rem 0.9rem;
+  border: 1px dashed var(--box-curiosita);
+  border-radius: var(--raggio);
+  background: var(--box-curiosita-sfondo);
+}
+.suggerimento-livello::before { content: "💡 Suggerimento: "; font-weight: 700; }
+
+.sim-memoria {
+  margin-top: 2rem;
+  padding: 0.6rem 0.9rem;
+  border: 1px dashed var(--avviso);
+  border-radius: var(--raggio);
+  background: var(--avviso-tenue);
+}
+
+@media (max-width: 40rem) {
+  .scheda-tab { padding: 0.5rem 0.6rem; font-size: 0.92rem; }
+  .selettore-mostrato { font-size: 1.1rem; }
+}
