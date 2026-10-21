@@ -1,0 +1,40 @@
+/* ==========================================================================
+   modulo.css — stili specifici del modulo 02
+   Rette dei numeri della sezione 2.3 (algoritmo di getRandomInt).
+   I colori usano le variabili di base.css, quindi seguono il tema chiaro/scuro.
+   ========================================================================== */
+.rette {
+  margin: 1.25rem 0;
+  padding: 1rem;
+  background: var(--sfondo-alt);
+  border: 1px solid var(--bordo);
+  border-radius: var(--raggio);
+}
+.rette-passo p { margin: 0 0 0.25rem; }
+.rette-freccia {
+  margin: 0.25rem 0;
+  text-align: center;
+  color: var(--testo-tenue);
+  font-size: 1.25rem;
+}
+.rette figcaption {
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--testo-tenue);
+  text-align: center;
+}
+
+/* La retta: l'SVG si adatta alla larghezza disponibile */
+.retta { display: block; width: 100%; max-width: 34rem; height: auto; margin: 0 auto; }
+.retta .asse, .retta .tacca { stroke: var(--testo-tenue); stroke-width: 2; }
+.retta .numero { fill: var(--testo); font: 18px var(--font-codice); text-anchor: middle; }
+.retta .banda { fill: var(--accento-tenue); stroke: var(--accento); stroke-width: 2; }
+.retta .estremo-pieno { fill: var(--accento); }
+/* estremo escluso: cerchio vuoto, distinguibile anche senza colori */
+.retta .estremo-vuoto { fill: var(--superficie); stroke: var(--accento); stroke-width: 2.5; }
+.retta .marca { fill: var(--box-attenzione); }
+.retta .marca-testo { fill: var(--box-attenzione); font: bold 17px var(--font-codice); }
+
+@media print {
+  .rette { background: none; }
+}

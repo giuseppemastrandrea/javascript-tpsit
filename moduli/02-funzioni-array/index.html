@@ -6,6 +6,7 @@
   <title>Funzioni e array · TPSIT 4° anno</title>
   <link rel="stylesheet" href="../../assets/css/base.css">
   <link rel="stylesheet" href="../../assets/css/dispensa.css">
+  <link rel="stylesheet" href="modulo.css">
   <script src="../../assets/js/tema.js"></script>
   <script src="../../corso.js" defer></script>
   <script src="../../assets/js/corso-ui.js" defer></script>
@@ -44,10 +45,9 @@
 
         <blockquote class="traccia">
           <p>Scrivere una funzione <code>getRandomInt(min, max)</code> che prenda in input un numero minimo e massimo e ritorni un numero intero compreso all'interno dell'intervallo specificato.</p>
-          <p>Dopo aver sviluppato e testato la funzione creare un array in Javascript contenente un elenco di 10 URL di immagini e usare la funzione appena sviluppata per far apparire all'interno di una pagina web un'immagine presa in maniera casuale dall'array ad ogni caricamento della pagina.</p>
         </blockquote>
 
-        <p>Ci servono tre cose: le <strong>funzioni</strong>, un modo per ottenere un <strong>numero a caso</strong> e gli <strong>array</strong>. Le vediamo una alla volta. La soluzione, invece, la scrivi tu.</p>
+        <p>Ci servono due cose: le <strong>funzioni</strong> e un modo per ottenere un <strong>numero a caso</strong>. Le vediamo una alla volta. La soluzione, invece, la scrivi tu. Alla fine facciamo i primi passi con gli <strong>array</strong>.</p>
       </section>
 
       <!-- ================================================================
@@ -174,6 +174,102 @@
           <p>In una formula: <strong>delta × numero casuale + min</strong>, poi si toglie la parte decimale con <code>Math.floor</code>.</p>
         </aside>
 
+        <p>Vediamolo su una retta dei numeri, con <code>min</code> = 3 e <code>max</code> = 8:</p>
+
+        <figure class="rette">
+          <div class="rette-passo">
+            <p><strong>1.</strong> <code>Math.random()</code> dà un numero tra 0 e 1, con 1 escluso. Supponiamo che esca 0,62.</p>
+            <svg class="retta" viewBox="0 0 510 74" role="img" aria-label="Intervallo da 0 incluso a 1 escluso; il valore estratto è 0,62">
+              <line class="asse" x1="10" y1="40" x2="500" y2="40"/>
+              <line class="tacca" x1="30" y1="35" x2="30" y2="45"/><text class="numero" x="30" y="66">0</text>
+              <line class="tacca" x1="80" y1="35" x2="80" y2="45"/><text class="numero" x="80" y="66">1</text>
+              <line class="tacca" x1="130" y1="35" x2="130" y2="45"/><text class="numero" x="130" y="66">2</text>
+              <line class="tacca" x1="180" y1="35" x2="180" y2="45"/><text class="numero" x="180" y="66">3</text>
+              <line class="tacca" x1="230" y1="35" x2="230" y2="45"/><text class="numero" x="230" y="66">4</text>
+              <line class="tacca" x1="280" y1="35" x2="280" y2="45"/><text class="numero" x="280" y="66">5</text>
+              <line class="tacca" x1="330" y1="35" x2="330" y2="45"/><text class="numero" x="330" y="66">6</text>
+              <line class="tacca" x1="380" y1="35" x2="380" y2="45"/><text class="numero" x="380" y="66">7</text>
+              <line class="tacca" x1="430" y1="35" x2="430" y2="45"/><text class="numero" x="430" y="66">8</text>
+              <line class="tacca" x1="480" y1="35" x2="480" y2="45"/><text class="numero" x="480" y="66">9</text>
+              <rect class="banda" x="30" y="33" width="50" height="14" rx="3"/>
+              <circle class="estremo-pieno" cx="30" cy="40" r="6"/>
+              <circle class="estremo-vuoto" cx="80" cy="40" r="6"/>
+              <path class="marca" d="M54 14 L68 14 L61 27 Z"/>
+              <text class="marca-testo" x="73" y="22">0,62</text>
+            </svg>
+          </div>
+          <p class="rette-freccia" aria-hidden="true">↓</p>
+          <div class="rette-passo">
+            <p><strong>2.</strong> Moltiplico per delta = 8 − 3 = 5: l'intervallo si <strong>stira</strong> da 0 a 5. Il valore diventa 0,62 × 5 = 3,1.</p>
+            <svg class="retta" viewBox="0 0 510 74" role="img" aria-label="Intervallo da 0 incluso a 5 escluso; il valore è 3,1">
+              <line class="asse" x1="10" y1="40" x2="500" y2="40"/>
+              <line class="tacca" x1="30" y1="35" x2="30" y2="45"/><text class="numero" x="30" y="66">0</text>
+              <line class="tacca" x1="80" y1="35" x2="80" y2="45"/><text class="numero" x="80" y="66">1</text>
+              <line class="tacca" x1="130" y1="35" x2="130" y2="45"/><text class="numero" x="130" y="66">2</text>
+              <line class="tacca" x1="180" y1="35" x2="180" y2="45"/><text class="numero" x="180" y="66">3</text>
+              <line class="tacca" x1="230" y1="35" x2="230" y2="45"/><text class="numero" x="230" y="66">4</text>
+              <line class="tacca" x1="280" y1="35" x2="280" y2="45"/><text class="numero" x="280" y="66">5</text>
+              <line class="tacca" x1="330" y1="35" x2="330" y2="45"/><text class="numero" x="330" y="66">6</text>
+              <line class="tacca" x1="380" y1="35" x2="380" y2="45"/><text class="numero" x="380" y="66">7</text>
+              <line class="tacca" x1="430" y1="35" x2="430" y2="45"/><text class="numero" x="430" y="66">8</text>
+              <line class="tacca" x1="480" y1="35" x2="480" y2="45"/><text class="numero" x="480" y="66">9</text>
+              <rect class="banda" x="30" y="33" width="250" height="14" rx="3"/>
+              <circle class="estremo-pieno" cx="30" cy="40" r="6"/>
+              <circle class="estremo-vuoto" cx="280" cy="40" r="6"/>
+              <path class="marca" d="M178 14 L192 14 L185 27 Z"/>
+              <text class="marca-testo" x="197" y="22">3,1</text>
+            </svg>
+          </div>
+          <p class="rette-freccia" aria-hidden="true">↓</p>
+          <div class="rette-passo">
+            <p><strong>3.</strong> Aggiungo min = 3: l'intervallo si <strong>sposta</strong> da 3 a 8. Il valore diventa 3,1 + 3 = 6,1.</p>
+            <svg class="retta" viewBox="0 0 510 74" role="img" aria-label="Intervallo da 3 incluso a 8 escluso; il valore è 6,1">
+              <line class="asse" x1="10" y1="40" x2="500" y2="40"/>
+              <line class="tacca" x1="30" y1="35" x2="30" y2="45"/><text class="numero" x="30" y="66">0</text>
+              <line class="tacca" x1="80" y1="35" x2="80" y2="45"/><text class="numero" x="80" y="66">1</text>
+              <line class="tacca" x1="130" y1="35" x2="130" y2="45"/><text class="numero" x="130" y="66">2</text>
+              <line class="tacca" x1="180" y1="35" x2="180" y2="45"/><text class="numero" x="180" y="66">3</text>
+              <line class="tacca" x1="230" y1="35" x2="230" y2="45"/><text class="numero" x="230" y="66">4</text>
+              <line class="tacca" x1="280" y1="35" x2="280" y2="45"/><text class="numero" x="280" y="66">5</text>
+              <line class="tacca" x1="330" y1="35" x2="330" y2="45"/><text class="numero" x="330" y="66">6</text>
+              <line class="tacca" x1="380" y1="35" x2="380" y2="45"/><text class="numero" x="380" y="66">7</text>
+              <line class="tacca" x1="430" y1="35" x2="430" y2="45"/><text class="numero" x="430" y="66">8</text>
+              <line class="tacca" x1="480" y1="35" x2="480" y2="45"/><text class="numero" x="480" y="66">9</text>
+              <rect class="banda" x="180" y="33" width="250" height="14" rx="3"/>
+              <circle class="estremo-pieno" cx="180" cy="40" r="6"/>
+              <circle class="estremo-vuoto" cx="430" cy="40" r="6"/>
+              <path class="marca" d="M328 14 L342 14 L335 27 Z"/>
+              <text class="marca-testo" x="347" y="22">6,1</text>
+            </svg>
+          </div>
+          <p class="rette-freccia" aria-hidden="true">↓</p>
+          <div class="rette-passo">
+            <p><strong>4.</strong> Con <code>Math.floor</code> tolgo la parte decimale: 6,1 diventa 6. I risultati possibili sono 3, 4, 5, 6 e 7. L'8 non esce mai.</p>
+            <svg class="retta" viewBox="0 0 510 74" role="img" aria-label="Risultati possibili: 3, 4, 5, 6, 7; l'8 è escluso; il valore è 6">
+              <line class="asse" x1="10" y1="40" x2="500" y2="40"/>
+              <line class="tacca" x1="30" y1="35" x2="30" y2="45"/><text class="numero" x="30" y="66">0</text>
+              <line class="tacca" x1="80" y1="35" x2="80" y2="45"/><text class="numero" x="80" y="66">1</text>
+              <line class="tacca" x1="130" y1="35" x2="130" y2="45"/><text class="numero" x="130" y="66">2</text>
+              <line class="tacca" x1="180" y1="35" x2="180" y2="45"/><text class="numero" x="180" y="66">3</text>
+              <line class="tacca" x1="230" y1="35" x2="230" y2="45"/><text class="numero" x="230" y="66">4</text>
+              <line class="tacca" x1="280" y1="35" x2="280" y2="45"/><text class="numero" x="280" y="66">5</text>
+              <line class="tacca" x1="330" y1="35" x2="330" y2="45"/><text class="numero" x="330" y="66">6</text>
+              <line class="tacca" x1="380" y1="35" x2="380" y2="45"/><text class="numero" x="380" y="66">7</text>
+              <line class="tacca" x1="430" y1="35" x2="430" y2="45"/><text class="numero" x="430" y="66">8</text>
+              <line class="tacca" x1="480" y1="35" x2="480" y2="45"/><text class="numero" x="480" y="66">9</text>
+              <circle class="estremo-pieno" cx="180" cy="40" r="7"/>
+              <circle class="estremo-pieno" cx="230" cy="40" r="7"/>
+              <circle class="estremo-pieno" cx="280" cy="40" r="7"/>
+              <circle class="estremo-pieno" cx="330" cy="40" r="7"/>
+              <circle class="estremo-pieno" cx="380" cy="40" r="7"/>
+              <circle class="estremo-vuoto" cx="430" cy="40" r="7"/>
+              <path class="marca" d="M323 14 L337 14 L330 27 Z"/>
+              <text class="marca-testo" x="342" y="22">6</text>
+            </svg>
+          </div>
+          <figcaption>● estremo incluso &nbsp; ○ estremo escluso &nbsp; ▼ il valore dell'esempio</figcaption>
+        </figure>
+
         <aside class="box box-attenzione" data-titolo="⚠ Attenzione: max non esce mai">
           <p>Come <code>Math.random()</code> non restituisce mai 1, così <code>getRandomInt</code> non restituisce mai <code>max</code>: <code>min</code> è incluso, <code>max</code> è escluso. Verificalo con i conti: prendi <code>min</code> = 1 e <code>max</code> = 6 e prova con il valore più piccolo che <code>Math.random()</code> può dare (0) e con quello più grande (0,999…). Quali numeri possono uscire?</p>
         </aside>
@@ -189,7 +285,7 @@
       <section>
         <h2 id="s3">3. Gli array</h2>
 
-        <p>Per la seconda parte della traccia servono 10 indirizzi di immagini. Potresti creare 10 variabili, <code>url1</code>, <code>url2</code>, …, <code>url10</code>. Ma con un numero a caso come 7 non c'è modo di dire "prendi la variabile numero 7". Serve un <strong>elenco numerato</strong>: l'array.</p>
+        <p>Immagina di dover gestire 10 indirizzi di immagini. Potresti creare 10 variabili, <code>url1</code>, <code>url2</code>, …, <code>url10</code>. Ma con un numero a caso come 7 non c'è modo di dire "prendi la variabile numero 7". Serve un <strong>elenco numerato</strong>: l'array.</p>
 
         <h3 id="s3-1">3.1 Creare un array e leggere gli elementi</h3>
 
