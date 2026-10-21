@@ -17,6 +17,7 @@ Tutto funziona **offline**: niente librerie esterne, niente installazioni.
 | # | Modulo | Argomenti |
 |---|--------|-----------|
 | 01 | [Primi passi con JavaScript](moduli/01-primi-passi/index.html) | `prompt` e `alert`, template literal, `typeof`, `parseInt` e `parseFloat`, `isNaN`, `querySelector`, `innerHTML` |
+| 02 | [Funzioni e array](moduli/02-funzioni-array/index.html) | `function` e `return`, `Math.random` e `Math.floor`, array e `length` |
 
 ### Strumenti
 

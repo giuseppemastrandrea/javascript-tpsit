@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Funzioni e array · TPSIT 4° anno</title>
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/dispensa.css">
+  <script src="../../assets/js/tema.js"></script>
+  <script src="../../corso.js" defer></script>
+  <script src="../../assets/js/corso-ui.js" defer></script>
+  <script src="../../assets/js/dispensa.js" defer></script>
+  <script src="../../assets/js/runner.js" defer></script>
+</head>
+<body data-radice="../../" data-modulo="02-funzioni-array">
+
+  <header class="barra">
+    <button type="button" class="pulsante indice-apri" aria-controls="indice" aria-expanded="false">☰ Indice</button>
+    <a class="barra-home" href="../../index.html">← Home <span class="testo-lungo">del corso</span></a>
+    <span class="barra-titolo">Funzioni e array</span>
+    <button type="button" class="pulsante tema-interruttore" data-tema-interruttore>☾ Scuro</button>
+  </header>
+
+  <div class="dispensa">
+    <nav class="dispensa-indice" id="indice" aria-label="Indice della dispensa">
+      <p class="indice-titolo">Indice</p>
+      <ol data-indice></ol>
+    </nav>
+
+    <main class="dispensa-contenuto">
+      <header class="dispensa-intestazione">
+        <p class="scheda-numero">Modulo 02</p>
+        <h1>Funzioni e array</h1>
+        <p class="sottotitolo">Gli strumenti per scegliere un elemento a caso da un elenco.</p>
+      </header>
+
+      <!-- ================================================================
+           INTRODUZIONE
+           ================================================================ -->
+      <section>
+        <h2 id="introduzione">Introduzione</h2>
+
+        <p>Questa dispensa ti dà i pezzi che servono per risolvere questo esercizio:</p>
+
+        <blockquote class="traccia">
+          <p>Scrivere una funzione <code>getRandomInt(min, max)</code> che prenda in input un numero minimo e massimo e ritorni un numero intero compreso all'interno dell'intervallo specificato.</p>
+          <p>Dopo aver sviluppato e testato la funzione creare un array in Javascript contenente un elenco di 10 URL di immagini e usare la funzione appena sviluppata per far apparire all'interno di una pagina web un'immagine presa in maniera casuale dall'array ad ogni caricamento della pagina.</p>
+        </blockquote>
+
+        <p>Ci servono tre cose: le <strong>funzioni</strong>, un modo per ottenere un <strong>numero a caso</strong> e gli <strong>array</strong>. Le vediamo una alla volta. La soluzione, invece, la scrivi tu.</p>
+      </section>
+
+      <!-- ================================================================
+           1. FUNZIONI
+           ================================================================ -->
+      <section>
+        <h2 id="s1">1. Le funzioni</h2>
+
+        <p>Una <strong>funzione</strong> è un pezzo di codice con un nome. La scrivi una volta e la usi tutte le volte che vuoi, anche con valori diversi.</p>
+
+        <h3 id="s1-1">1.1 Dichiarare e chiamare una funzione</h3>
+
+        <script type="text/plain" data-esegui>
+          function quadrato(n) {
+            return n * n;
+          }
+
+          console.log(quadrato(3));
+          console.log(quadrato(10));
+
+          const risultato = quadrato(7);
+          console.log(`Il quadrato di 7 è ${risultato}`);
+        </script>
+
+        <ul>
+          <li><code>function</code> dice che stiamo dichiarando una funzione.</li>
+          <li><code>quadrato</code> è il suo <strong>nome</strong>.</li>
+          <li><code>n</code> è il <strong>parametro</strong>: il valore che la funzione riceve da fuori.</li>
+          <li><code>return</code> restituisce il risultato a chi ha chiamato la funzione.</li>
+          <li><code>quadrato(3)</code> è la <strong>chiamata</strong>: esegue la funzione con <code>n</code> uguale a 3.</li>
+        </ul>
+
+        <p>I parametri possono essere più di uno, separati da virgole:</p>
+
+        <script type="text/plain" data-esegui>
+          function areaRettangolo(base, altezza) {
+            return base * altezza;
+          }
+
+          console.log(areaRettangolo(3, 4));
+          console.log(areaRettangolo(10, 2.5));
+        </script>
+
+        <aside class="box box-cpp">
+          <p>È quasi uguale al C++, con una differenza: <strong>non si scrivono i tipi</strong>. Niente tipo di ritorno davanti al nome e niente tipo davanti ai parametri.</p>
+          <script type="text/plain" data-codice="cpp">
+            // C++
+            int areaRettangolo(int base, int altezza) {
+                return base * altezza;
+            }
+          </script>
+          <p>In JavaScript la stessa funzione accetta interi, decimali e, purtroppo, anche stringhe: controllare che i valori abbiano senso tocca a te.</p>
+        </aside>
+
+        <h3 id="s1-2">1.2 return non è console.log</h3>
+
+        <p><code>console.log</code> <strong>stampa</strong> un valore nella console. <code>return</code> lo <strong>restituisce</strong> a chi ha chiamato la funzione, che poi può usarlo: salvarlo in una variabile, metterlo in un calcolo, scriverlo nella pagina.</p>
+
+        <script type="text/plain" data-esegui>
+          function quadratoStampato(n) {
+            console.log(n * n);
+          }
+
+          function quadratoRestituito(n) {
+            return n * n;
+          }
+
+          const a = quadratoStampato(5);
+          const b = quadratoRestituito(5);
+          console.log(`a vale ${a}, b vale ${b}`);
+        </script>
+
+        <aside class="box box-attenzione">
+          <p>Una funzione senza <code>return</code> restituisce <code>undefined</code>. Il 25 compare nella console, ma <code>a</code> resta vuota. Se una funzione deve <strong>calcolare</strong> qualcosa, il risultato va restituito con <code>return</code>.</p>
+        </aside>
+
+        <aside class="box box-prova-tu">
+          <p>Scrivi una funzione <code>media(a, b)</code> che restituisca la media di due numeri. Chiamala tre volte con valori diversi e stampa i risultati con un template literal.</p>
+        </aside>
+      </section>
+
+      <!-- ================================================================
+           2. NUMERI A CASO
+           ================================================================ -->
+      <section>
+        <h2 id="s2">2. Un numero a caso: l'algoritmo di getRandomInt</h2>
+
+        <p>Prima di scrivere <code>getRandomInt</code> ci servono due metodi dell'oggetto <code>Math</code>. Ricordi gli oggetti del modulo 01? <code>Math</code> è un oggetto, e <code>random</code> e <code>floor</code> sono due suoi metodi: per questo si scrivono con il punto e con le parentesi.</p>
+
+        <h3 id="s2-1">2.1 Math.random</h3>
+
+        <p><code>Math.random()</code> restituisce un numero decimale a caso, <strong>maggiore o uguale a 0 e minore di 1</strong>. Può uscire 0, ma non esce mai 1. Esegui l'esempio più volte:</p>
+
+        <script type="text/plain" data-esegui>
+          console.log(Math.random());
+          console.log(Math.random());
+          console.log(Math.random());
+        </script>
+
+        <h3 id="s2-2">2.2 Math.floor</h3>
+
+        <p><code>Math.floor(x)</code> arrotonda <strong>per difetto</strong>: elimina la parte decimale e restituisce un intero.</p>
+
+        <script type="text/plain" data-esegui>
+          console.log(Math.floor(3.2));
+          console.log(Math.floor(3.7));
+          console.log(Math.floor(3.999));
+          console.log(Math.floor(5));
+        </script>
+
+        <h3 id="s2-3">2.3 L'algoritmo, a parole</h3>
+
+        <p><code>Math.random()</code> dà un numero tra 0 e 1. A noi serve un <strong>intero</strong> tra <code>min</code> e <code>max</code>. L'idea è "stirare" e poi "spostare" il numero casuale:</p>
+
+        <ol>
+          <li><strong>Calcola delta</strong>, l'ampiezza dell'intervallo, a partire da <code>min</code> e <code>max</code>.</li>
+          <li><strong>Moltiplica</strong> <code>Math.random()</code> per delta: ottieni un numero a caso tra 0 e delta (delta escluso). Hai "stirato" l'intervallo.</li>
+          <li><strong>Aggiungi</strong> <code>min</code>: ora il numero parte da <code>min</code> invece che da 0. Hai "spostato" l'intervallo.</li>
+          <li><strong>Elimina la parte decimale</strong> con <code>Math.floor</code>: ottieni un intero.</li>
+          <li><strong>Restituisci</strong> il risultato con <code>return</code>.</li>
+        </ol>
+
+        <aside class="box box-regola">
+          <p>In una formula: <strong>delta × numero casuale + min</strong>, poi si toglie la parte decimale.</p>
+        </aside>
+
+        <aside class="box box-attenzione" data-titolo="⚠ Attenzione: quanto vale delta?">
+          <p>Il punto delicato è il passo 1. Prendi <code>min</code> = 1 e <code>max</code> = 6, come un dado. Fai i conti con il valore più piccolo che <code>Math.random()</code> può dare (0) e con quello più grande (0,999…). Esce l'1? Esce il 6? Se vuoi che possa uscire anche <code>max</code>, quanto deve valere delta?</p>
+        </aside>
+
+        <aside class="box box-prova-tu">
+          <p>Scrivi <code>getRandomInt(min, max)</code> seguendo l'algoritmo. Poi <strong>testala</strong>: chiamala tante volte, per esempio dentro un ciclo <code>for</code>, con un intervallo piccolo come 1–3, e controlla che escano tutti i valori dell'intervallo e nessun altro.</p>
+        </aside>
+      </section>
+
+      <!-- ================================================================
+           3. ARRAY
+           ================================================================ -->
+      <section>
+        <h2 id="s3">3. Gli array</h2>
+
+        <p>Per la seconda parte della traccia servono 10 indirizzi di immagini. Potresti creare 10 variabili, <code>url1</code>, <code>url2</code>, …, <code>url10</code>. Ma con un numero a caso come 7 non c'è modo di dire "prendi la variabile numero 7". Serve un <strong>elenco numerato</strong>: l'array.</p>
+
+        <h3 id="s3-1">3.1 Creare un array e leggere gli elementi</h3>
+
+        <p>Un array si scrive tra parentesi quadre, con gli elementi separati da virgole. Ogni elemento ha una posizione, l'<strong>indice</strong>, che <strong>parte da 0</strong>.</p>
+
+        <script type="text/plain" data-esegui>
+          const frutti = ["mela", "pera", "banana", "kiwi"];
+
+          console.log(frutti[0]);
+          console.log(frutti[1]);
+          console.log(frutti[3]);
+        </script>
+
+        <div class="tabella">
+          <table>
+            <thead><tr><th>Indice</th><th>0</th><th>1</th><th>2</th><th>3</th></tr></thead>
+            <tbody><tr><td><strong>Elemento</strong></td><td><code>"mela"</code></td><td><code>"pera"</code></td><td><code>"banana"</code></td><td><code>"kiwi"</code></td></tr></tbody>
+          </table>
+        </div>
+
+        <p>Tra le parentesi quadre non deve esserci per forza un numero scritto a mano: va bene anche una <strong>variabile</strong>. È proprio quello che ci serve per scegliere un elemento a caso.</p>
+
+        <script type="text/plain" data-esegui>
+          const frutti = ["mela", "pera", "banana", "kiwi"];
+          const i = 2;
+
+          console.log(`Alla posizione ${i} c'è: ${frutti[i]}`);
+        </script>
+
+        <aside class="box box-prova">
+          <p>Cambia il valore di <code>i</code>: prova 0, 3 e poi 4. Cosa succede con 4?</p>
+        </aside>
+
+        <h3 id="s3-2">3.2 length: quanti elementi ci sono</h3>
+
+        <p><code>length</code> dice quanti elementi contiene l'array. È un <strong>attributo</strong>, non un metodo: si scrive senza parentesi.</p>
+
+        <script type="text/plain" data-esegui>
+          const frutti = ["mela", "pera", "banana", "kiwi"];
+
+          console.log(frutti.length);
+          console.log(`L'ultimo frutto è ${frutti[frutti.length - 1]}`);
+        </script>
+
+        <aside class="box box-attenzione">
+          <p>Gli elementi sono 4, ma gli indici vanno da 0 a 3. L'ultimo elemento è sempre <code>frutti[frutti.length - 1]</code>. <code>frutti[frutti.length]</code> è già fuori dall'array e vale <code>undefined</code>.</p>
+        </aside>
+
+        <aside class="box box-cpp">
+          <p>In C++ un array ha una dimensione fissa e tutti gli elementi dello stesso tipo, e se leggi fuori dall'array il comportamento è imprevedibile. In JavaScript un array conosce la propria lunghezza (<code>length</code>), può contenere valori di tipi diversi e, se leggi fuori, ottieni semplicemente <code>undefined</code>.</p>
+        </aside>
+
+        <aside class="box box-prova-tu">
+          <p>Crea un array con i nomi di 5 compagni di classe. Stampa il primo, l'ultimo usando <code>length</code> e quanti sono in tutto. Poi aggiungi un sesto nome all'array: il codice che stampa l'ultimo deve continuare a funzionare senza modifiche.</p>
+        </aside>
+      </section>
+
+      <!-- ================================================================
+           4. RIEPILOGO
+           ================================================================ -->
+      <section>
+        <h2 id="s4">4. Riepilogo</h2>
+
+        <div class="tabella">
+          <table>
+            <thead><tr><th>Strumento</th><th>Cosa fa</th><th>Simile in C++</th></tr></thead>
+            <tbody>
+              <tr><td><code>function nome(a, b) { … }</code></td><td>dichiara una funzione con due parametri</td><td><code>int nome(int a, int b) { … }</code></td></tr>
+              <tr><td><code>return valore</code></td><td>restituisce un valore a chi ha chiamato la funzione</td><td><code>return</code></td></tr>
+              <tr><td><code>Math.random()</code></td><td>numero decimale a caso, da 0 (incluso) a 1 (escluso)</td><td><code>rand()</code></td></tr>
+              <tr><td><code>Math.floor(x)</code></td><td>arrotonda per difetto</td><td><code>floor</code></td></tr>
+              <tr><td><code>[a, b, c]</code></td><td>crea un array</td><td><code>int v[] = {a, b, c};</code></td></tr>
+              <tr><td><code>v[i]</code></td><td>legge l'elemento all'indice <code>i</code> (si parte da 0)</td><td><code>v[i]</code></td></tr>
+              <tr><td><code>v.length</code></td><td>numero di elementi</td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 id="s4-errori">Errori tipici</h3>
+
+        <ul>
+          <li>Stampare il risultato con <code>console.log</code> invece di restituirlo con <code>return</code>.</li>
+          <li>Partire a contare gli indici da 1 invece che da 0.</li>
+          <li>Usare <code>v[v.length]</code> per l'ultimo elemento invece di <code>v[v.length - 1]</code>.</li>
+          <li>Scrivere <code>v.length()</code> con le parentesi: <code>length</code> è un attributo, non un metodo.</li>
+        </ul>
+
+        <p>Ora hai tutti i pezzi: torna alla <a href="#introduzione">traccia</a> e risolvila.</p>
+      </section>
+
+      <nav class="nav-moduli" data-navigazione-moduli aria-label="Altri moduli"></nav>
+    </main>
+  </div>
+
+</body>
+</html>

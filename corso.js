@@ -25,6 +25,15 @@ window.CORSO = {
       argomenti: ["prompt e alert", "template literal", "typeof", "parseInt e parseFloat", "isNaN", "attributi e metodi", "querySelector", "innerHTML"],
       percorso: "moduli/01-primi-passi/index.html",
       stato: "pubblicato"
+    },
+    {
+      id: "02-funzioni-array",
+      numero: 2,
+      titolo: "Funzioni e array",
+      descrizione: "Le funzioni, l'algoritmo per estrarre un numero a caso e i primi passi con gli array.",
+      argomenti: ["function", "return", "Math.random", "Math.floor", "array", "length"],
+      percorso: "moduli/02-funzioni-array/index.html",
+      stato: "pubblicato"
     }
   ],
 
