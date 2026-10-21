@@ -163,7 +163,7 @@
         <p><code>Math.random()</code> dà un numero tra 0 e 1. A noi serve un <strong>intero</strong> tra <code>min</code> e <code>max</code>. L'idea è "stirare" e poi "spostare" il numero casuale:</p>
 
         <ol>
-          <li><strong>Calcola delta</strong>, l'ampiezza dell'intervallo, a partire da <code>min</code> e <code>max</code>.</li>
+          <li><strong>Calcola delta</strong>, l'ampiezza dell'intervallo: la differenza tra <code>max</code> e <code>min</code>.</li>
           <li><strong>Moltiplica</strong> <code>Math.random()</code> per delta: ottieni un numero a caso tra 0 e delta (delta escluso). Hai "stirato" l'intervallo.</li>
           <li><strong>Aggiungi</strong> <code>min</code>: ora il numero parte da <code>min</code> invece che da 0. Hai "spostato" l'intervallo.</li>
           <li><strong>Elimina la parte decimale</strong> con <code>Math.floor</code>: ottieni un intero.</li>
@@ -171,15 +171,15 @@
         </ol>
 
         <aside class="box box-regola">
-          <p>In una formula: <strong>delta × numero casuale + min</strong>, poi si toglie la parte decimale.</p>
+          <p>In una formula: <strong>delta × numero casuale + min</strong>, poi si toglie la parte decimale con <code>Math.floor</code>.</p>
         </aside>
 
-        <aside class="box box-attenzione" data-titolo="⚠ Attenzione: quanto vale delta?">
-          <p>Il punto delicato è il passo 1. Prendi <code>min</code> = 1 e <code>max</code> = 6, come un dado. Fai i conti con il valore più piccolo che <code>Math.random()</code> può dare (0) e con quello più grande (0,999…). Esce l'1? Esce il 6? Se vuoi che possa uscire anche <code>max</code>, quanto deve valere delta?</p>
+        <aside class="box box-attenzione" data-titolo="⚠ Attenzione: max non esce mai">
+          <p>Come <code>Math.random()</code> non restituisce mai 1, così <code>getRandomInt</code> non restituisce mai <code>max</code>: <code>min</code> è incluso, <code>max</code> è escluso. Verificalo con i conti: prendi <code>min</code> = 1 e <code>max</code> = 6 e prova con il valore più piccolo che <code>Math.random()</code> può dare (0) e con quello più grande (0,999…). Quali numeri possono uscire?</p>
         </aside>
 
         <aside class="box box-prova-tu">
-          <p>Scrivi <code>getRandomInt(min, max)</code> seguendo l'algoritmo. Poi <strong>testala</strong>: chiamala tante volte, per esempio dentro un ciclo <code>for</code>, con un intervallo piccolo come 1–3, e controlla che escano tutti i valori dell'intervallo e nessun altro.</p>
+          <p>Scrivi <code>getRandomInt(min, max)</code> seguendo l'algoritmo. Poi <strong>testala</strong>: chiamala tante volte, per esempio dentro un ciclo <code>for</code>, con un intervallo piccolo come 1–4, e controlla che escano tutti i valori da <code>min</code> a <code>max</code> escluso, e nessun altro.</p>
         </aside>
       </section>
 
